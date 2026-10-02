@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>My Overtime — Admin Panel</title>
+<script src="https://www.gstatic.com/firebasejs/12.2.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.2.1/firebase-database-compat.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,"Noto Sans Bengali",sans-serif;background:#faf7f9;color:#242124}button,input,textarea{font:inherit}button{cursor:pointer;border:0}.app{display:flex;min-height:100vh}.sidebar{width:245px;background:#fff;border-right:1px solid #f0dce5;padding:20px 14px;position:fixed;inset:0 auto 0 0;z-index:20}.brand{padding:10px 12px 22px;border-bottom:1px solid #f2e5ea;margin-bottom:16px}.brand b{font-size:21px;color:#e2136e}.brand span{display:block;font-size:11px;color:#8d8188;margin-top:5px}.nav{display:grid;gap:8px}.nav button{width:100%;text-align:left;background:#fff;color:#665d63;border:1px solid transparent;border-radius:12px;padding:13px 12px;font-weight:800}.nav button.active{background:#fff0f6;color:#e2136e;border-color:#f5cddd}.nav button:hover{border-color:#f3d6e2}.side-bottom{position:absolute;bottom:18px;left:14px;right:14px;border:1px solid #f0dce5;background:#fffafd;border-radius:12px;padding:11px;font-size:10px;color:#8a7d85}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#17a673;margin-right:6px}.main{margin-left:245px;width:calc(100% - 245px);padding:22px;max-width:1500px}.top{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:18px}.top h1{margin:0;font-size:24px}.top p{margin:5px 0 0;color:#8a7d85;font-size:12px}.status{background:#fff;border:1px solid #efdce5;padding:9px 12px;border-radius:11px;font-size:11px;font-weight:800}.page{display:none}.page.active{display:block}.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.stat{background:#fff;border:1px solid #f0dce5;border-radius:16px;padding:15px;min-height:108px}.stat small{display:block;color:#8b7e86;font-size:11px}.stat b{display:block;color:#e2136e;font-size:26px;margin-top:13px}.section-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.box{background:#fff;border:1px solid #f0dce5;border-radius:16px;padding:16px}.box h2{font-size:15px;margin:0 0 12px}.box h3{font-size:12px;margin:0 0 9px;color:#e2136e}.notice textarea{min-height:105px;resize:vertical;border:1px solid #ead9e0;border-radius:11px;padding:11px;width:100%;outline:0}.notice textarea:focus,.search:focus{border-color:#e2136e;box-shadow:0 0 0 3px #fff0f6}.btnrow{display:flex;gap:8px;margin-top:9px}.pink{background:#e2136e;color:#fff}.white{background:#fff;border:1px solid #ead9e0;color:#555}.btn{padding:10px 13px;border-radius:10px;font-size:11px;font-weight:800}.feed{display:grid;gap:8px}.feed-item{border:1px solid #f0dfe6;background:#fffafd;border-radius:11px;padding:10px;font-size:11px}.feed-item b{color:#e2136e;display:block;margin-bottom:4px}.toolbar{display:flex;gap:9px;margin-bottom:12px}.search{flex:1;border:1px solid #ead9e0;border-radius:11px;padding:11px;background:#fff;outline:0}.count{padding:11px 13px;border-radius:11px;background:#fff0f6;color:#e2136e;font-weight:900;font-size:11px}.accounts{display:grid;grid-template-columns:350px 1fr;gap:14px}.list{max-height:calc(100vh - 170px);overflow:auto}.user{border:1px solid #f0dfe6;border-radius:13px;padding:12px;margin-bottom:8px;background:#fff;cursor:pointer}.user:hover,.user.selected{border-color:#e2136e;background:#fff5f9}.user-top{display:flex;gap:9px;align-items:center}.avatar{width:38px;height:38px;border-radius:10px;background:#e2136e;color:#fff;display:grid;place-items:center;font-weight:900}.u-main{min-width:0}.u-main strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.muted{font-size:10px;color:#8b7e86;margin-top:3px}.tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.tag{font-size:9px;padding:4px 6px;border-radius:7px;background:#fff0f6;color:#e2136e}.tag.gray{background:#f7f5f6;color:#777}.detail{min-width:0}.profile-head{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f0e1e7;padding-bottom:12px;margin-bottom:12px}.profile-head h2{margin:0;font-size:17px}.subtabs{display:flex;gap:7px;margin-bottom:12px}.subtabs button{padding:8px 10px;border-radius:9px;background:#f8f5f7;color:#666;font-size:10px;font-weight:800}.subtabs button.active{background:#e2136e;color:#fff}.detail-section{border:1px solid #f0dfe6;border-radius:13px;margin-bottom:10px;overflow:hidden}.detail-section>header{background:#fff4f8;color:#e2136e;padding:9px 11px;font-size:11px;font-weight:900}.kv{display:grid;grid-template-columns:170px 1fr;border-bottom:1px solid #f3e8ec;padding:8px 11px;font-size:11px}.kv:last-child{border:0}.kv .k{color:#8a7e85}.kv .v{word-break:break-word}.editgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:11px}.field label{display:block;color:#8a7e85;font-size:9px;font-weight:800;margin-bottom:4px}.field input{width:100%;border:1px solid #ead9e0;border-radius:9px;padding:9px;outline:0}.raw{padding:11px}.raw textarea{width:100%;min-height:330px;border:1px solid #ead9e0;border-radius:10px;padding:10px;font:11px monospace;outline:0}.actions{display:flex;gap:8px;padding:11px;border-top:1px solid #f0dfe6}.actions .btn{flex:1}.danger{background:#fff0f2;color:#c4004f;border:1px solid #f5ceda}.empty{padding:35px;text-align:center;color:#999;font-size:12px}.locations{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.loc{border:1px solid #f0dfe6;border-radius:12px;padding:12px;background:#fff}.loc b{font-size:12px}.loc span{display:block;color:#e2136e;font-size:22px;font-weight:900;margin-top:6px}.mobile-menu{display:none}
+@media(max-width:1050px){.cards{grid-template-columns:repeat(3,1fr)}.accounts{grid-template-columns:300px 1fr}.section-grid{grid-template-columns:1fr}}
+@media(max-width:760px){.sidebar{transform:translateX(-100%);transition:.2s}.sidebar.open{transform:none}.main{margin-left:0;width:100%;padding:14px}.mobile-menu{display:block;background:#e2136e;color:#fff;border-radius:9px;padding:9px 12px;font-weight:900}.top{align-items:flex-start}.top h1{font-size:20px}.cards{grid-template-columns:1fr 1fr}.accounts{grid-template-columns:1fr}.list{max-height:390px}.editgrid{grid-template-columns:1fr}.locations{grid-template-columns:1fr 1fr}}
+@media(max-width:430px){.cards{grid-template-columns:1fr}.top{flex-wrap:wrap}.kv{grid-template-columns:110px 1fr}.locations{grid-template-columns:1fr}}
+
+/* App-style side-by-side box layout */
+.box-grid, .cards-grid, .stats-grid, .account-grid, .dashboard-grid {
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:12px !important;
+  align-items:stretch;
+}
+.box-grid > *, .cards-grid > *, .stats-grid > *, .account-grid > *, .dashboard-grid > * {
+  min-width:0;
+}
+@media (min-width:700px){
+  .box-grid, .cards-grid, .stats-grid, .account-grid, .dashboard-grid {
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  }
+}
+@media (min-width:1000px){
+  .box-grid, .cards-grid, .stats-grid, .account-grid, .dashboard-grid {
+    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  }
+}
+/* Make common stat/card containers form a compact phone-app grid */
+.stats, .stat-cards, .metric-grid, .quick-grid, .action-grid {
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:12px !important;
+}
+@media (min-width:700px){
+  .stats, .stat-cards, .metric-grid, .quick-grid, .action-grid {
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  }
+}
+@media (min-width:1000px){
+  .stats, .stat-cards, .metric-grid, .quick-grid, .action-grid {
+    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  }
+}
+
+
+/* v4 fixes: clean Menu/Dashboard spacing + delete/reset controls */
+.title-line{display:flex;align-items:center;gap:12px;min-height:40px}.title-line .mobile-menu{margin:0;flex:0 0 auto}.title-line h1{line-height:1.2}.title-wrap>p{margin-left:52px!important}.total-user-card{cursor:default}.total-card-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:11px;padding-top:10px;border-top:1px solid #f3e2e9}.small-btn{padding:8px 10px!important;font-size:10px!important;flex:1}.feed-item{display:flex;align-items:center;justify-content:space-between;gap:12px}.feed-item>div{min-width:0;flex:1}.feed-delete{flex:0 0 auto!important;padding:8px 11px!important;font-size:10px!important}.btn.danger{background:#fff1f3;color:#d92b55;border:1px solid #f3c4cf}.btn.danger:hover{background:#ffe5eb}
+@media(max-width:760px){.title-wrap>p{margin-left:0!important}.title-line{gap:10px}.title-line h1{font-size:20px}.feed-item{align-items:flex-start}.feed-delete{margin-top:2px}}
+@media(max-width:430px){.title-line{gap:8px}.mobile-menu{padding:8px 10px!important}}
+</style>
+
+<style id="app-side-by-side-overrides">
+main .row, main .cards, main .card-row, main .tile-row {
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:12px !important;
+}
+@media (min-width:700px){
+  main .row, main .cards, main .card-row, main .tile-row {
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  }
+}
+@media (min-width:1000px){
+  main .row, main .cards, main .card-row, main .tile-row {
+    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  }
+}
+</style>
+
+
+<style id="mobile-menu-final-fix">
+.mobile-menu{display:none!important}
+.menu-close{display:none}
+.menu-overlay{display:none}
+@media(max-width:760px){
+  .mobile-menu{display:block!important;position:relative;z-index:2}
+  .sidebar{width:285px!important;max-width:86vw!important;transform:translateX(-110%)!important;transition:transform .22s ease!important;z-index:1001!important;box-shadow:12px 0 35px rgba(60,20,40,.12)!important;overflow-y:auto!important}
+  .sidebar.open{transform:translateX(0)!important}
+  .menu-close{display:block;position:absolute;right:12px;top:12px;width:34px;height:34px;border-radius:10px;background:#fff0f6;color:#e2136e;border:1px solid #f5cddd;font-weight:900;font-size:18px}
+  .menu-overlay{display:block;position:fixed;inset:0;background:rgba(40,20,30,.28);z-index:1000;opacity:0;pointer-events:none;transition:opacity .2s ease}
+  .menu-overlay.show{opacity:1;pointer-events:auto}
+  .brand{padding-right:48px}
+}
+</style>
+
+<style id="custom-confirm-style">
+.confirm-modal{display:none;position:fixed;inset:0;background:rgba(35,20,28,.42);z-index:2000;align-items:center;justify-content:center;padding:18px}
+.confirm-modal.show{display:flex}
+.confirm-box{width:min(390px,100%);background:#fff;border:1px solid #f0c5d7;border-radius:20px;padding:20px;box-shadow:0 22px 70px rgba(40,20,30,.22)}
+.confirm-title{font-size:18px;font-weight:900;color:#e2136e;margin-bottom:9px}
+.confirm-text{font-size:13px;line-height:1.6;color:#4b4348;white-space:pre-wrap}
+.confirm-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}
+.confirm-actions .btn{min-width:82px}
+</style>
+
+<style id="messenger-feedback-final">
+/* Feedback Messenger */
+.feedback-accounts{display:grid;gap:10px}
+.feedback-account-card{background:#fff;border:1px solid #efdbe5;border-radius:20px;padding:13px 14px;display:flex;align-items:center;gap:11px;cursor:pointer;box-shadow:0 5px 18px rgba(226,19,110,.045);transition:.16s ease}
+.feedback-account-card:active{transform:scale(.985)}
+.feedback-account-card.selected{border-color:#e2136e;box-shadow:0 7px 22px rgba(226,19,110,.12)}
+.feedback-avatar{width:48px;height:48px;flex:0 0 48px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#e2136e,#f45b9a);color:#fff;font-size:18px;font-weight:900}
+.feedback-account-main{min-width:0;flex:1}
+.feedback-account-name{font-size:14px;font-weight:900;color:#242124;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.feedback-account-id{font-size:10px;color:#8a7d85;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.feedback-account-preview{font-size:10px;color:#5e555a;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.feedback-account-meta{display:flex;align-items:center;gap:5px;flex:0 0 auto}
+.feedback-count-pill{min-width:23px;height:23px;padding:0 6px;border-radius:999px;background:#e2136e;color:#fff;display:grid;place-items:center;font-size:9px;font-weight:900}
+.feedback-arrow{font-size:19px;color:#e2136e;font-weight:900}
+.feedback-messenger{background:#fff;border:1px solid #efdbe5;border-radius:22px;overflow:hidden;box-shadow:0 7px 24px rgba(226,19,110,.06)}
+.messenger-head{padding:14px 15px;border-bottom:1px solid #f0e1e7;display:flex;align-items:center;gap:10px;background:#fff7fa}
+.messenger-back{border:0;background:#fff0f6;color:#e2136e;border-radius:12px;width:36px;height:36px;font-size:22px;font-weight:900;cursor:pointer}
+.messenger-head-main{min-width:0;flex:1;text-align:left}
+.messenger-head-name{font-size:15px;font-weight:900;color:#242124}
+.messenger-head-id{font-size:9px;color:#8a7d85;margin-top:2px}
+.messenger-status{font-size:8px;font-weight:900;color:#15956d;background:#effaf5;border:1px solid #ccecdf;padding:5px 7px;border-radius:999px}
+.messenger-body{padding:15px 13px 10px;background:#fff;max-height:58vh;overflow:auto}
+.messenger-empty{text-align:center;color:#a3959c;font-size:11px;padding:30px 10px}
+.chat-row{margin:0 0 12px;display:flex;flex-direction:column}
+.chat-row.user{align-items:flex-start}.chat-row.admin{align-items:flex-end}
+.chat-label{font-size:8px;font-weight:900;letter-spacing:.35px;margin:0 7px 4px;color:#9a8b92}
+.chat-row.admin .chat-label{color:#e2136e}
+.user-message-bubble,.admin-message-bubble{max-width:82%;padding:10px 13px;border-radius:16px;line-height:1.55;font-size:12px;word-break:break-word;white-space:pre-wrap}
+.user-message-bubble{background:#f5f2f4;color:#373136;border-top-left-radius:5px}
+.admin-message-bubble{background:#e2136e;color:#fff;border-top-right-radius:5px}
+.message-time{font-size:8px;color:#a3959c;margin:4px 6px 0}.chat-row.admin .message-time{text-align:right}
+.chat-delete{border:0;background:transparent;color:#c43b70;font-size:8px;margin-top:3px;cursor:pointer}
+.admin-composer{margin:8px 13px 14px;padding:13px;border:1px solid #f0cddd;border-radius:18px;background:#fff7fa;text-align:center}
+.admin-composer-title{font-size:14px;font-weight:900;color:#e2136e;margin-bottom:8px;text-align:center}
+.admin-composer textarea{display:block;width:100%;min-height:76px;resize:vertical;box-sizing:border-box;border:1px solid #efbfd1;border-radius:13px;background:#fff;color:#3d3439;padding:10px 11px;font-size:12px;outline:none;text-align:left}
+.admin-composer textarea:focus{border-color:#e2136e;box-shadow:0 0 0 3px rgba(226,19,110,.08)}
+.admin-composer .btnrow{justify-content:center;margin-top:8px}
+.admin-composer .btn{min-width:150px}
+@media(max-width:430px){
+.feedback-account-card{padding:11px 12px;border-radius:18px}.feedback-avatar{width:43px;height:43px;flex-basis:43px;font-size:16px}.feedback-account-name{font-size:13px}.feedback-account-id{font-size:9px}.feedback-account-preview{font-size:9px}.feedback-messenger{border-radius:19px}.messenger-body{max-height:55vh;padding:13px 10px}.user-message-bubble,.admin-message-bubble{max-width:88%;font-size:12px}.admin-composer{margin:8px 10px 12px}.admin-composer .btn{min-width:140px}}
+</style>
+
+<style id="profile-delete-messenger">
+.messenger-head{position:relative;padding-right:125px!important}
+.messenger-profile-delete{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:#fff0f3;color:#d21b59;border:1px solid #f2bfd0;border-radius:9px;padding:7px 9px;font-size:9px;font-weight:900;white-space:nowrap}
+.messenger-profile-delete:hover{background:#ffe2eb}
+@media(max-width:600px){.messenger-head{padding-right:105px!important}.messenger-profile-delete{font-size:8px;padding:6px 7px;right:7px}}
+</style>
+<style id="adda-live-audio-style">.adda-live{display:grid;gap:14px}.live-hero{background:linear-gradient(135deg,#fff,#fff0f6);border:1px solid #f0c5d7;border-radius:20px;padding:18px}.live-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.live-title{font-size:18px;font-weight:900;color:#e2136e}.live-badge{padding:6px 10px;border-radius:999px;font-size:10px;font-weight:900;background:#f5f2f4;color:#777}.live-badge.on{background:#ffe6f0;color:#e2136e}.live-controls{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}.live-stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.live-stat{background:#fff;border:1px solid #f0dce5;border-radius:14px;padding:12px;text-align:center}.live-stat small{display:block;color:#8b7e86;font-size:9px}.live-stat b{display:block;color:#e2136e;font-size:20px;margin-top:5px}.live-request{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #f0dfe6;border-radius:13px;padding:11px;background:#fffafd}.live-request-main{min-width:0}.live-request-main b{display:block;font-size:12px}.live-request-main span{font-size:9px;color:#8b7e86}.live-request-actions{display:flex;gap:6px}.live-help{font-size:10px;color:#8a7d85;line-height:1.6;margin:10px 0 0}@media(max-width:600px){.live-stat-grid{grid-template-columns:1fr 1fr}.live-request{align-items:flex-start;flex-direction:column}.live-request-actions{width:100%}.live-request-actions .btn{flex:1}}</style><style id="adda-premium-admin-style">
+.adda-live{gap:15px!important}
+.adda-premium-hero{position:relative;overflow:hidden;background:linear-gradient(145deg,#fff 0%,#fff5f9 55%,#ffeaf3 100%);border:1px solid #f1c4d8;border-radius:24px;padding:18px;box-shadow:0 12px 35px rgba(214,0,95,.08)}
+.adda-premium-hero:after{content:"";position:absolute;inset:auto -35% -65% 20%;height:150px;background:radial-gradient(circle,rgba(226,19,110,.10),transparent 65%);pointer-events:none}
+.adda-hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;position:relative;z-index:1}
+.adda-brand-mark{display:flex;align-items:center;gap:8px;color:#d90061;font-size:17px;font-weight:950;letter-spacing:.4px}
+.adda-wave-mini{height:22px;width:25px;display:flex;align-items:center;justify-content:center;gap:2px;flex:0 0 25px}.adda-wave-mini i{display:block;width:3px;height:10px;border-radius:5px;background:#e2136e;transform:none!important;opacity:1!important;animation:none!important}.adda-wave-mini i:nth-child(2){height:15px}.adda-wave-mini i:nth-child(3){height:20px}.adda-wave-mini i:nth-child(4){height:15px}.adda-wave-mini i:nth-child(5){height:10px}
+.adda-hero-title{font-size:24px;font-weight:950;color:#262126;margin-top:7px}.adda-hero-sub{font-size:10px;line-height:1.65;color:#8c7881;margin-top:5px;max-width:540px}
+.adda-voice-panel{position:relative;z-index:1;margin-top:15px;background:#fff;border:1px solid #f1d5e1;border-radius:18px;padding:12px 13px;box-shadow:0 7px 18px rgba(214,0,95,.05)}
+.adda-voice-label{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#8a7680;font-weight:800}.adda-voice-label b{color:#d90061;font-size:10px}.adda-voice-bars{height:48px;display:flex;align-items:center;justify-content:center;gap:4px;margin-top:5px}.adda-voice-bars i{width:5px;height:8px;border-radius:8px;background:linear-gradient(180deg,#e2136e,#f08ab4);transform:scaleY(.35);transform-origin:center;transition:transform .08s linear,opacity .12s;opacity:.5;box-shadow:0 0 8px rgba(226,19,110,.08)}.adda-voice-caption{text-align:center;font-size:8px;color:#b197a1;margin-top:1px}
+.adda-box{padding:15px!important}.adda-box-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.adda-box-head h2{margin:0!important;color:#29242a!important}.adda-box-head span{display:block;font-size:8px;color:#a18d96;margin-top:3px}.adda-box-pill{min-width:28px;height:28px;padding:0 9px;border-radius:10px;background:#fff0f6;color:#d90061;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:950;border:1px solid #f5cfdf}.adda-box-pill.live-pill{background:#e2136e;color:#fff;border-color:#e2136e}
+.live-request{transition:transform .18s,box-shadow .18s,border-color .18s}.live-request:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(214,0,95,.07);border-color:#edbfd3}.adda-speaker-live{display:flex;align-items:center;gap:8px}.adda-speaker-live .adda-speaker-bars{height:26px;display:flex;align-items:center;gap:2px}.adda-speaker-bars i{width:3px;height:7px;border-radius:5px;background:#e2136e;opacity:.45;transform:scaleY(.35);transform-origin:center;transition:transform .08s linear}.adda-speaker-dot{width:9px;height:9px;border-radius:50%;background:#e2136e;box-shadow:0 0 0 5px #ffe8f1;flex:0 0 auto}
+@media(max-width:600px){.adda-premium-hero{padding:15px;border-radius:21px}.adda-hero-title{font-size:21px}.adda-hero-sub{font-size:9px}.adda-voice-bars{height:42px}.adda-voice-bars i{width:4px}}
+</style><style id="realtime-box-premium">
+:root{--pink:#e2136e;--pale:#fff0f6;--line:#f1d7e2}
+body{background:linear-gradient(180deg,#fff 0%,#fff7fa 100%)}
+.sidebar{background:rgba(255,255,255,.97);box-shadow:8px 0 28px rgba(226,19,110,.05)}
+.nav button{border-radius:14px;transition:.16s ease}.nav button.active{box-shadow:0 5px 16px rgba(226,19,110,.08)}
+.stat,.box,.user,.loc,.detail-section,.feedback-account-card,.feedback-messenger,.live-stat,.live-request{box-shadow:0 5px 20px rgba(226,19,110,.045)}
+.stat:hover,.box:hover,.loc:hover,.user:hover,.live-request:hover{border-color:#efbfd2}
+.stat{background:linear-gradient(145deg,#fff,#fffafd)}.box{border-radius:18px}
+.btn{transition:.15s ease}.btn:hover{transform:translateY(-1px)}
+.pink{box-shadow:0 5px 14px rgba(226,19,110,.13)}
+.profile-head{background:linear-gradient(90deg,#fff7fa,#fff);padding:12px;border-radius:14px;border:1px solid #f5e1e8}
+.actions{background:#fffafd}.feed-item{background:linear-gradient(145deg,#fff,#fff8fb)}
+@media(max-width:760px){.main{padding:12px}.cards{gap:9px}.stat{padding:12px;min-height:94px}.stat b{font-size:22px}.box{padding:13px}}
+</style><style id="account-ot-stats">.account-mini-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-top:9px}.account-mini-stats span{background:#fff6fa;border:1px solid #f3d5e1;border-radius:9px;padding:5px 3px;text-align:center;font-size:8px;color:#8b7480}.account-mini-stats b{display:block;color:#d90061;font-size:10px;margin-bottom:2px}@media(max-width:520px){.account-mini-stats{grid-template-columns:repeat(2,1fr)}}</style><style id="total-profile-modal-style">
+.total-profile-modal{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:16px}.total-profile-modal.show{display:flex}.total-profile-overlay{position:absolute;inset:0;background:rgba(45,10,25,.42);backdrop-filter:blur(5px)}.total-profile-box{position:relative;z-index:2;width:min(680px,96vw);max-height:90vh;overflow:auto;background:#fff;border:1.5px solid #f2bfd4;border-radius:24px;padding:18px;box-shadow:0 24px 70px rgba(226,19,110,.2)}.total-profile-close{position:absolute;right:13px;top:13px;width:34px;height:34px;border:1px solid #f2bfd4;border-radius:50%;background:#fff5f9;color:#d90061;font-size:22px}.total-profile-head{display:flex;align-items:center;gap:12px;padding:6px 40px 14px 2px;border-bottom:1px solid #f2e0e8}.total-profile-head h2{margin:0;color:#333;font-size:18px}.total-profile-head p,.total-profile-head small{display:block;margin:3px 0 0;color:#8b7882;font-size:10px}.total-profile-head .tag{margin-left:auto}.total-profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}.total-profile-stats>div{background:#fff7fa;border:1px solid #f2d3df;border-radius:14px;padding:11px;text-align:center}.total-profile-stats small{display:block;color:#8b7882;font-size:9px}.total-profile-stats b{display:block;color:#d90061;font-size:16px;margin-top:4px}.total-profile-info{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.total-profile-info .kv{background:#fff;border:1px solid #f0e0e7;border-radius:10px;padding:8px}.total-profile-ot{margin-top:14px}.total-profile-ot h3{font-size:13px;color:#d90061;margin:0 0 8px}.total-ot-row{display:flex;justify-content:space-between;gap:10px;align-items:center;background:#fff7fa;border:1px solid #f1dce5;border-radius:12px;padding:9px 10px;margin-top:6px}.total-ot-row b,.total-ot-row strong{font-size:11px;color:#333}.total-ot-row span{display:block;color:#8b7882;font-size:9px;margin-top:2px}.total-ot-row strong{color:#d90061}@media(max-width:480px){.total-profile-box{padding:14px;border-radius:20px}.total-profile-stats{grid-template-columns:repeat(2,1fr)}.total-profile-info{grid-template-columns:1fr}.total-profile-head h2{font-size:16px}}
+</style>
+
+<style id="total-account-premium">
+#total .toolbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-bottom:10px}#total .search{height:42px;border-radius:13px;border:1px solid #f0d8e3;background:#fff;box-shadow:0 5px 16px rgba(226,19,110,.05);font-size:12px}#total .count{min-width:86px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:13px;background:#fff2f7;border:1px solid #f5d5e2;color:#d90061;font-weight:800;font-size:11px}#total>.box{border-radius:16px!important;padding:12px!important;background:linear-gradient(145deg,#fff,#fffafd)!important;border:1px solid #f1dce5!important;box-shadow:0 6px 20px rgba(226,19,110,.055)!important}#total>.box>h2{font-size:12px!important;margin:0 0 9px!important}.total-user-card{padding:11px!important;border-radius:15px!important;border:1px solid #f1dce5!important;background:linear-gradient(145deg,#fff,#fffafd)!important;box-shadow:0 5px 16px rgba(226,19,110,.055)!important;margin:7px 0!important}.total-user-card:hover{border-color:#edb7ce!important;box-shadow:0 8px 22px rgba(226,19,110,.10)!important}.total-account-main{cursor:pointer}.total-status{margin-left:auto;padding:4px 8px;border-radius:9px;font-size:8px;font-weight:900;letter-spacing:.3px}.total-status.on{background:#eafaf3;color:#159a63}.total-status.off{background:#fff0f3;color:#d92b55}.total-mini-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-top:8px}.total-mini-grid>div{min-width:0;background:#fff7fa;border:1px solid #f2dce6;border-radius:9px;padding:6px 5px;text-align:center}.total-mini-grid small{display:block;color:#98838d;font-size:7px;white-space:nowrap}.total-mini-grid b{display:block;color:#d90061;font-size:9px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.total-card-actions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;margin-top:9px!important;padding-top:8px!important;border-top:1px solid #f3e3e9!important}.small-btn{height:34px!important;padding:7px 8px!important;font-size:9px!important;border-radius:10px!important}.profile-btn{box-shadow:0 5px 13px rgba(226,19,110,.12)}.locations{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.locations .loc{min-width:0!important;background:#fff7fa!important;border:1px solid #f2dce6!important;border-radius:10px!important;padding:7px!important;box-shadow:none!important}.locations .loc b{font-size:9px!important}.locations .loc span{font-size:13px!important;color:#d90061!important}@media(max-width:600px){#total .toolbar{grid-template-columns:1fr auto}.total-mini-grid{grid-template-columns:repeat(2,1fr)}.locations{grid-template-columns:repeat(2,1fr)}}
+.total-profile-stats>div,.total-profile-info .kv{box-shadow:0 4px 12px rgba(226,19,110,.045)}.total-profile-stats>div{padding:9px!important;border-radius:11px!important}.total-profile-info .kv{padding:7px!important;border-radius:10px!important}.total-profile-actions{gap:6px!important}.total-profile-actions .btn{padding:9px 11px!important;border-radius:10px!important;font-size:10px!important}.total-profile-edit-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #f2e0e8}.total-profile-edit-head h2{margin:0;color:#333;font-size:16px}.total-profile-edit-head p{margin:3px 0 0;color:#8b7882;font-size:9px}.total-profile-back{border:1px solid #f2bfd4;background:#fff5f9;color:#d90061;border-radius:9px;padding:7px 10px;font-size:9px}.total-profile-edit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.total-profile-edit-grid .field{background:#fff7fa;border:1px solid #f2dce6;border-radius:10px;padding:7px}.total-profile-edit-grid .field label{font-size:8px;color:#8b7882}.total-profile-edit-grid .field input{height:30px;font-size:10px;border-radius:8px;margin-top:4px;background:#fff}@media(max-width:480px){.total-profile-edit-grid{grid-template-columns:1fr}}
+</style>
+<style id="dashboard-premium-v5">
+/* Premium compact Dashboard */
+#dashboard{padding-top:2px}
+#dashboard>.cards{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:9px!important;margin-bottom:12px}
+#dashboard>.cards .stat{position:relative;min-height:78px!important;height:78px;padding:11px 12px!important;border:1px solid #f3dce6!important;border-radius:14px!important;background:linear-gradient(145deg,#fff 0%,#fffafd 72%,#fff1f7 100%)!important;box-shadow:0 6px 18px rgba(226,19,110,.07),inset 0 1px 0 #fff!important;overflow:hidden;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+#dashboard>.cards .stat:before{content:"";position:absolute;left:0;top:0;width:30px;height:3px;border-radius:0 0 5px 0;background:linear-gradient(90deg,#e2136e,#f58db9)}
+#dashboard>.cards .stat:after{content:"";position:absolute;right:-16px;bottom:-18px;width:54px;height:54px;border-radius:50%;background:#fff0f6;opacity:.75}
+#dashboard>.cards .stat:hover{transform:translateY(-2px);border-color:#edb7ce!important;box-shadow:0 9px 24px rgba(226,19,110,.12),inset 0 1px 0 #fff!important}
+#dashboard>.cards .stat small{position:relative;z-index:1;font-size:9px!important;font-weight:800;letter-spacing:.2px;color:#8c7b84!important;white-space:nowrap}
+#dashboard>.cards .stat b{position:relative;z-index:1;display:block;margin-top:7px!important;font-size:21px!important;line-height:1!important;color:#e2136e!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#dashboard>.cards .stat:nth-child(3) b{font-size:12px!important;margin-top:9px!important}
+#dashboard>.section-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:0}
+#dashboard>.section-grid .box{border-radius:15px;padding:13px!important;background:linear-gradient(145deg,#fff,#fffafd);box-shadow:0 6px 20px rgba(226,19,110,.055);border-color:#f1dce5}
+#dashboard>.section-grid .box h2,#dashboard>.box>h2{font-size:12px!important;margin-bottom:9px!important}
+#dashboard .notice textarea{min-height:82px!important;height:82px;padding:10px!important;border-radius:11px!important;background:#fff;box-shadow:inset 0 1px 4px rgba(80,30,50,.025)}
+#dashboard .btnrow{margin-top:7px!important;gap:6px!important}
+#dashboard .btnrow .btn{padding:8px 10px!important;font-size:9px!important;border-radius:9px!important}
+#dashboard>.box:last-child{margin-top:10px!important;padding:13px!important;border-radius:15px!important;box-shadow:0 6px 20px rgba(226,19,110,.055);background:linear-gradient(145deg,#fff,#fffafd)}
+#dashboard .feed{gap:6px!important}
+#dashboard .feed-item{border-radius:10px!important;padding:8px 10px!important;font-size:10px!important}
+@media(max-width:1050px){#dashboard>.cards{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:700px){#dashboard>.cards{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}#dashboard>.cards .stat{height:74px;min-height:74px!important;padding:10px!important}#dashboard>.cards .stat b{font-size:19px!important}#dashboard>.cards .stat:nth-child(3) b{font-size:11px!important}#dashboard>.section-grid{grid-template-columns:1fr!important;gap:8px!important}#dashboard>.section-grid .box{padding:11px!important}#dashboard .notice textarea{min-height:72px!important;height:72px!important}}
+@media(max-width:430px){#dashboard>.cards{gap:7px!important}#dashboard>.cards .stat{border-radius:12px!important;height:70px;min-height:70px!important;padding:9px!important}#dashboard>.cards .stat small{font-size:8px!important}#dashboard>.cards .stat b{font-size:18px!important;margin-top:6px!important}#dashboard>.cards .stat:nth-child(3) b{font-size:10px!important}}
+</style>
+
+<style id="premium-compact-all-sections">
+main{padding:16px!important}.top{margin-bottom:12px!important}.top h1{font-size:22px!important;font-weight:950!important}.top p{font-size:10px!important}.status{padding:7px 10px!important;border-radius:999px!important;font-size:10px!important}
+.cards{gap:8px!important}.stat{min-height:78px!important;height:78px!important;padding:10px 11px!important;border-radius:15px!important;background:linear-gradient(145deg,#fff,#fff7fa)!important;box-shadow:0 5px 18px rgba(226,19,110,.055)!important}.stat small{font-size:9px!important}.stat b{font-size:21px!important;margin-top:8px!important}
+.section-grid{gap:8px!important;margin-top:9px!important}.box{border-radius:15px!important;padding:12px!important;box-shadow:0 5px 18px rgba(226,19,110,.045)!important}.box h2{font-size:13px!important;margin-bottom:8px!important}.box h3{font-size:11px!important}.notice textarea{min-height:68px!important;height:68px!important;padding:9px!important;font-size:11px!important;border-radius:11px!important}.btn{padding:8px 10px!important;border-radius:10px!important;font-size:10px!important}.btnrow{gap:6px!important;margin-top:7px!important}.feed{gap:6px!important}.feed-item{padding:8px 9px!important;border-radius:11px!important;font-size:10px!important}
+.toolbar{gap:7px!important;margin-bottom:9px!important}.search{padding:9px 10px!important;border-radius:11px!important;font-size:11px!important}.count{padding:9px 10px!important;border-radius:11px!important;font-size:10px!important}.accounts{gap:9px!important}.list,.detail{border-radius:15px!important;padding:10px!important}.user{padding:9px!important;border-radius:12px!important;margin-bottom:6px!important}.avatar{width:34px!important;height:34px!important;border-radius:10px!important}.u-main strong{font-size:11px!important}.muted{font-size:9px!important}
+.locations{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}.loc{padding:9px!important;border-radius:11px!important}.loc b{font-size:10px!important}.loc span{font-size:18px!important;margin-top:3px!important}.total-user-card{padding:10px!important;border-radius:14px!important;background:linear-gradient(145deg,#fff,#fff7fa)!important;box-shadow:0 5px 18px rgba(226,19,110,.055)!important;margin-bottom:8px!important}.total-user-card .total-mini-grid{display:none!important}.total-card-actions{grid-template-columns:1fr 1fr!important;gap:7px!important;margin-top:9px!important;padding-top:8px!important}.total-card-actions .profile-btn{background:#e2136e!important;color:#fff!important}.total-card-actions .small-btn{padding:8px!important}.detail-section{border-radius:11px!important;margin-bottom:7px!important}.detail-section>header{padding:8px 9px!important;font-size:10px!important}.kv{padding:7px 9px!important;font-size:10px!important}.empty{padding:22px!important;font-size:10px!important}
+.media-notice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:9px}.media-card{background:linear-gradient(145deg,#fff,#fff6fa);border:1px solid #f0d7e2;border-radius:14px;padding:10px;box-shadow:0 5px 18px rgba(226,19,110,.045)}.media-card h3{margin:0 0 7px;color:#e2136e;font-size:11px;font-weight:950}.media-card p{margin:0 0 7px;color:#91828b;font-size:9px;line-height:1.4}.media-file{width:100%;font-size:9px;padding:7px;border:1px dashed #edbfd1;border-radius:9px;background:#fff}.media-preview{margin-top:7px;display:none;border-radius:10px;overflow:hidden;border:1px solid #f0d8e2;background:#fff}.media-preview.show{display:block}.media-preview img{display:block;width:100%;max-height:130px;object-fit:cover}.media-actions{display:flex;gap:6px;margin-top:7px}.media-actions .btn{flex:1}
+@media(max-width:600px){main{padding:12px!important}.media-notice-grid{grid-template-columns:1fr 1fr!important}.media-card{padding:9px!important}.media-preview img{max-height:110px!important}}@media(max-width:430px){.cards{gap:6px!important}.stat{height:70px!important;min-height:70px!important;padding:8px!important}.stat small{font-size:8px!important}.stat b{font-size:18px!important;margin-top:5px!important}.media-notice-grid{gap:6px!important}.media-card h3{font-size:10px!important}}
+</style>
+
+<style id="v13-unified-control-center">
+.cc-wrap{max-width:1100px;margin:0 auto}.cc-hero{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:22px;border-radius:22px;background:linear-gradient(135deg,#fff,#fff0f6);border:1px solid #f4c4d9;box-shadow:0 14px 40px rgba(226,19,110,.09);margin-bottom:16px}.cc-kicker{font-size:9px;font-weight:900;letter-spacing:2px;color:#e2136e}.cc-hero h2{margin:4px 0;font-size:26px}.cc-hero p{margin:0;color:#777;font-size:12px}.cc-live{font-size:9px;font-weight:900;color:#e2136e;background:#fff;border:1px solid #f3bfd5;padding:8px 11px;border-radius:999px;white-space:nowrap}.cc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.cc-card{appearance:none;text-align:left;border:1px solid #eee;background:#fff;border-radius:18px;padding:18px;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.045);transition:.2s}.cc-card:hover{transform:translateY(-2px);border-color:#ef9fc1;box-shadow:0 12px 28px rgba(226,19,110,.10)}.cc-card span{display:block;font-size:24px;margin-bottom:10px}.cc-card b{display:block;font-size:15px;color:#222}.cc-card small{display:block;color:#777;font-size:10px;line-height:1.5;margin:5px 0 12px}.cc-card em{font-style:normal;color:#e2136e;font-size:10px;font-weight:900}.cc-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.cc-actions .btn{min-height:40px}.cc-tip{margin-top:14px;padding:12px 14px;border-radius:14px;background:#fff8fb;border:1px solid #f5d3e2;color:#666;font-size:10px;line-height:1.5}.cc-tip b{color:#e2136e}@media(max-width:650px){.cc-grid{grid-template-columns:1fr}.cc-hero{padding:17px}.cc-hero h2{font-size:22px}.cc-live{font-size:8px}}
+</style>
+<style id="v14-unified-publisher-style">
+.v14-publisher{margin-top:14px!important;border-radius:22px!important;background:linear-gradient(145deg,#fff,#fff6fa)!important;border:1px solid #f0cfdd!important;box-shadow:0 12px 35px rgba(226,19,110,.07)!important}
+.v14-pub-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.v14-kicker{font-size:8px;font-weight:950;letter-spacing:1.7px;color:#e2136e}.v14-pub-head h2{margin:3px 0!important;font-size:18px!important;color:#252126!important}.v14-pub-head p{margin:0!important;font-size:9px!important;color:#91818a!important}.v14-live{padding:6px 9px;border-radius:999px;background:#fff0f6;color:#e2136e;border:1px solid #f3c4d7;font-size:8px;font-weight:950;white-space:nowrap}
+.v14-type-row{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:13px}.v14-type{border:1px solid #eddbe3;background:#fff;border-radius:13px;padding:9px 6px;cursor:pointer;color:#665961}.v14-type span{display:block;font-size:17px;color:#e2136e}.v14-type b{display:block;font-size:9px;margin-top:3px}.v14-type.active{border-color:#e2136e;background:#fff0f6;color:#d90061;box-shadow:0 5px 14px rgba(226,19,110,.09)}
+.v14-target-row{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:9px;color:#927f88}.v14-target{border:1px solid #ead8e0;background:#fff;border-radius:999px;padding:7px 10px;font-size:9px;color:#665961;cursor:pointer}.v14-target.active{background:#e2136e;color:#fff;border-color:#e2136e}.v14-input,.v14-textarea{width:100%;box-sizing:border-box;border:1px solid #ead6df;border-radius:12px;background:#fff;padding:10px;margin-top:9px;outline:none;font-size:10px}.v14-textarea{min-height:90px;resize:vertical;line-height:1.5}.v14-input:focus,.v14-textarea:focus{border-color:#e2136e;box-shadow:0 0 0 3px rgba(226,19,110,.07)}.v14-file-wrap{margin-top:9px}.v14-file{width:100%;box-sizing:border-box;border:1px dashed #edbfd1;border-radius:12px;background:#fff;padding:10px;font-size:9px}.v14-preview{display:flex;align-items:center;justify-content:center;min-height:55px;margin-top:7px;border-radius:12px;background:#fff0f6;border:1px solid #f0d3df;color:#a18c95;font-size:9px;overflow:hidden}.v14-preview img,.v14-preview video{max-width:100%;max-height:180px;display:block}.v14-preview audio{width:100%}.v14-pub-actions{display:flex;gap:7px;margin-top:9px}.v14-pub-actions .btn{flex:1}.v14-state{margin-top:8px;padding:7px 9px;border-radius:9px;background:#fff;color:#8e7d85;border:1px solid #f1dfe6;font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}@media(max-width:430px){.v14-pub-head h2{font-size:16px!important}.v14-type-row{gap:5px}.v14-type{padding:8px 3px}.v14-type span{font-size:15px}.v14-type b{font-size:8px}.v14-target-row{flex-wrap:wrap}}
+</style>
+<script id="v14-unified-publisher-script">
+(function(){
+  var type='text',target='notice',editingKey=null;
+  function db(){return window.firebase&&firebase.database?firebase.database():null;}
+  function toastMsg(x){if(typeof window.toast==='function')window.toast(x);else if(window.showToast)window.showToast(x);else alert(x);}
+  function state(x){var e=document.getElementById('v14State');if(e)e.textContent=x;}
+  function esc(x){return String(x??'').replace(/[&<>'"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]});}
+  function fmtTime(t){try{return new Date(Number(t)||Date.now()).toLocaleString([],{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});}catch(e){return '';}}
+  window.v14SelectType=function(x){type='text';document.querySelectorAll('.v14-type').forEach(function(b){b.classList.toggle('active',b.dataset.type==='text')});var tw=document.getElementById('v14Text'),fw=document.getElementById('v14FileWrap');if(tw)tw.style.display='block';if(fw)fw.style.display='none';state('Ready to publish text');};
+  window.v14SelectTarget=function(x){target=x;document.querySelectorAll('.v14-target').forEach(function(b){b.classList.toggle('active',b.dataset.target===x)})};
+  async function writeLibrary(d,key,payload){await d.ref('myOvertimeAdmin/mediaLibrary/'+key).set(payload);}
+  window.v14Publish=async function(){
+    var d=db();if(!d)return toastMsg('Firebase is not ready.');
+    var title=String(document.getElementById('v14Title')?.value||'').trim().slice(0,100), text=String(document.getElementById('v14Text')?.value||'').trim().slice(0,500);
+    try{
+      if(!text)return toastMsg('Write some text first.');
+      var key=editingKey||d.ref('myOvertimeAdmin/mediaLibrary').push().key, now=Date.now();
+      var payload={active:true,type:'text',text:text,title:title,name:title||'Text Update',target:target,updatedAt:now,createdAt:editingKey?undefined:now};
+      if(editingKey){var old=(await d.ref('myOvertimeAdmin/mediaLibrary/'+editingKey).once('value')).val()||{};payload.createdAt=old.createdAt||now;}
+      await writeLibrary(d,key,payload);
+      await d.ref('myOvertimeAdmin/notices/current').set({active:true,text:text,media:null,title:title,updatedAt:now,libraryKey:key,target:target});
+      state(editingKey?'Text update edited':'Text published');toastMsg(editingKey?'Update edited successfully.':'Text published successfully.');editingKey=null;v14Clear();v17Load();
+    }catch(e){console.error(e);state('Operation failed');toastMsg(e&&e.message?e.message:'Operation failed.');}
+  };
+  window.v14Clear=function(){['v14Title','v14Text'].forEach(function(id){var e=document.getElementById(id);if(e)e.value=''});editingKey=null;state('Ready to publish text');};
+  window.v17Edit=async function(key){var d=db();if(!d)return;var x=(await d.ref('myOvertimeAdmin/mediaLibrary/'+key).once('value')).val();if(!x||x.type!=='text')return toastMsg('Text update not found.');editingKey=key;document.getElementById('v14Title').value=x.title||x.name||'';document.getElementById('v14Text').value=x.text||'';v14SelectType('text');v14SelectTarget(x.target==='popular'?'popular':'notice');state('Editing selected text');window.scrollTo({top:0,behavior:'smooth'});};
+  window.v17CancelEdit=function(){v14Clear();};
+  window.v17Delete=async function(key){
+    var d=db();if(!d)return;var snap=await d.ref('myOvertimeAdmin/mediaLibrary/'+key).once('value'),x=snap.val();
+    if(!x||x.type!=='text')return toastMsg('Text update not found.');
+    if(!window.confirm('Delete this published update?'))return;
+    try{
+      await d.ref('myOvertimeAdmin/mediaLibrary/'+key).remove();
+      var curN=await d.ref('myOvertimeAdmin/notices/current').once('value'),nv=curN.val();
+      if(nv&&(String(nv.libraryKey||'')===String(key)||String(nv.text||'')===String(x.text||'')))await d.ref('myOvertimeAdmin/notices/current').remove();
+      toastMsg('Update deleted successfully.');if(editingKey===key)v14Clear();await v17Load();
+    }catch(e){console.error(e);toastMsg('Delete failed: '+(e.message||'Unknown error'));}
+  };
+  async function migrateCurrent(){
+    var d=db();if(!d)return;
+    var lib=(await d.ref('myOvertimeAdmin/mediaLibrary').once('value')).val()||{},writes={};
+    var n=(await d.ref('myOvertimeAdmin/notices/current').once('value')).val();
+    if(n&&n.active&&!Object.values(lib).some(function(x){return x&&x.type==='text'&&x.text===n.text})){var k=d.ref('myOvertimeAdmin/mediaLibrary').push().key;writes['myOvertimeAdmin/mediaLibrary/'+k]={active:true,type:'text',text:n.text||'',title:n.title||'',name:n.title||'Text Update',target:n.target||'notice',updatedAt:n.updatedAt||Date.now(),createdAt:n.updatedAt||Date.now()};}
+    if(Object.keys(writes).length)await d.ref().update(writes);
+  }
+  window.v17Load=function(){var d=db(),list=document.getElementById('v17List'),count=document.getElementById('v17Count');if(!d||!list)return;migrateCurrent().then(function(){return d.ref('myOvertimeAdmin/mediaLibrary').once('value')}).then(function(s){var obj=s.val()||{},arr=Object.entries(obj).map(function(a){return Object.assign({key:a[0]},a[1])}).filter(function(x){return x&&x.active!==false&&x.type==='text'}).sort(function(a,b){return Number(b.updatedAt||b.createdAt||0)-Number(a.updatedAt||a.createdAt||0)});if(count)count.textContent=arr.length;if(!arr.length){list.innerHTML='<div class="v17-empty">No published updates yet.</div>';return;}list.innerHTML=arr.map(function(x){var body=esc(x.text||'');return '<div class="v17-item"><div class="v17-thumb">TEXT</div><div class="v17-info"><div class="v17-title">'+esc(x.title||x.name||'Text Update')+'</div><div class="v17-meta"><span class="v17-tag">TEXT</span><span class="v17-tag">'+esc(x.target==='popular'?'Popular Notice / Popup':'Notice')+'</span></div><div class="v17-time">'+fmtTime(x.updatedAt||x.createdAt)+'</div>'+(body?'<div class="v17-time" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+body+'</div>':'')+'</div><div class="v17-actions"><button class="v17-action" type="button" data-key="'+esc(x.key)+'" onclick="v17Edit(this.dataset.key)">Edit</button><button class="v17-action danger" type="button" data-key="'+esc(x.key)+'" onclick="v17Delete(this.dataset.key)">Delete</button></div></div>';}).join('');}).catch(function(e){console.error(e);list.innerHTML='<div class="v17-empty">Could not load published updates.</div>';});};
+  v14SelectType('text');
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',v17Load);else v17Load();
+})();
+</script>
+<style id="v15-unified-polish">
+.v14-publisher{position:relative;overflow:hidden;border:1px solid rgba(225,19,110,.12)!important;background:linear-gradient(145deg,#fff 0%,#fff8fb 100%);box-shadow:0 14px 40px rgba(225,19,110,.10)!important;animation:pubFloat .55s ease both}
+.v14-publisher:before{content:"";position:absolute;inset:-40% auto auto -15%;width:180px;height:180px;border-radius:50%;background:rgba(225,19,110,.08);filter:blur(2px);animation:pubGlow 4s ease-in-out infinite}
+.v14-pub-head,.v14-type-row,.v14-target-row,.v14-fields,.v14-actions,.v14-state{position:relative;z-index:1}
+.v14-kicker{letter-spacing:1.8px;font-size:10px;font-weight:900;color:#e2136e}
+.v14-type{transition:transform .2s ease,box-shadow .2s ease,background .2s ease}.v14-type:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(225,19,110,.13)}.v14-type.active{animation:selPop .28s ease}
+.v14-target{transition:transform .2s ease,box-shadow .2s ease}.v14-target:hover{transform:translateY(-1px)}
+.v14-actions .btn{transition:transform .18s ease,box-shadow .18s ease}.v14-actions .btn:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(225,19,110,.16)}
+@keyframes pubFloat{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes pubGlow{0%,100%{transform:translate3d(0,0,0) scale(1);opacity:.7}50%{transform:translate3d(35px,15px,0) scale(1.15);opacity:1}}
+@keyframes selPop{0%{transform:scale(.96)}70%{transform:scale(1.03)}100%{transform:scale(1)}}
+@media(max-width:620px){.v14-target-row{flex-wrap:wrap}.v14-target-row>span{width:100%}.v14-target{flex:1;min-width:145px}.v14-type{min-width:72px}}
+@media(prefers-reduced-motion:reduce){.v14-publisher,.v14-publisher:before,.v14-type.active{animation:none!important}.v14-type,.v14-target,.v14-actions .btn{transition:none!important}}
+</style>
+
+<style id="v16-polish">
+/* v16 visual polish */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{animation:v16PageIn .45s ease both}
+@keyframes v16PageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.dashboard,.main,.content,.page,.panel,.card,.section-card{animation:v16Rise .55s cubic-bezier(.2,.75,.25,1) both}
+.card,.panel,.section-card,.stat,.user,.notice,.media-card,.publish-card{transition:transform .25s ease,box-shadow .25s ease,opacity .25s ease}
+.card:hover,.panel:hover,.section-card:hover,.stat:hover,.media-card:hover,.publish-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(255,20,120,.12)}
+button,.btn,.nav-item,.tab,.type-btn,.target-btn,input,select,textarea{transition:all .22s ease}
+button:hover,.btn:hover,.nav-item:hover,.tab:hover,.type-btn:hover,.target-btn:hover{transform:translateY(-2px)}
+button:active,.btn:active,.nav-item:active,.tab:active,.type-btn:active,.target-btn:active{transform:scale(.97)}
+input:focus,select:focus,textarea:focus{transform:translateY(-1px);box-shadow:0 0 0 3px rgba(255,20,120,.10)}
+.avatar{transition:transform .3s ease,box-shadow .3s ease}.user:hover .avatar{transform:scale(1.06) rotate(2deg)}
+.badge,.tag,.status,.pill{transition:transform .22s ease,opacity .22s ease}.badge:hover,.tag:hover,.status:hover,.pill:hover{transform:scale(1.04)}
+@keyframes v16Rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+</style>
+
+<style id="v16-dashboard-size">
+.v16-dashboard{min-height:calc(100vh - 8px);padding:18px 16px!important}
+.v16-dashboard .card,.v16-dashboard .panel,.v16-dashboard .section-card{min-height:1.03em}
+@media(min-width:700px){.v16-dashboard{padding:22px 20px!important}.v16-dashboard .card,.v16-dashboard .panel{transform-origin:center top}}
+</style>
+
+<style id="v17-media-library-style">
+.v17-library{margin-top:14px;border:1px solid #efd6e1!important;border-radius:22px!important;background:#fff!important;box-shadow:0 14px 36px rgba(226,19,110,.08)!important;overflow:hidden;animation:v17Rise .55s ease both}
+.v17-library-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 16px;border-bottom:1px solid #f4e5eb;background:linear-gradient(145deg,#fff,#fff8fb)}
+.v17-library-head h3{margin:0;font-size:16px;color:#292329}.v17-library-head p{margin:4px 0 0;font-size:9px;color:#93838b}.v17-count{min-width:30px;text-align:center;padding:6px 8px;border-radius:999px;background:#fff0f6;color:#d90061;font-size:9px;font-weight:900;border:1px solid #f1cada}
+.v17-list{padding:10px}.v17-item{position:relative;display:grid;grid-template-columns:58px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px;border:1px solid #f0dfe6;border-radius:16px;background:#fff;margin-bottom:8px;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;animation:v17Item .38s ease both}.v17-item:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(226,19,110,.09);border-color:#eab8cd}.v17-thumb{width:58px;height:58px;border-radius:13px;background:#fff0f6;border:1px solid #f0d2df;display:flex;align-items:center;justify-content:center;overflow:hidden;color:#d90061;font-size:9px;font-weight:900}.v17-thumb img,.v17-thumb video{width:100%;height:100%;object-fit:cover}.v17-thumb audio{width:48px}.v17-info{min-width:0}.v17-title{font-size:11px;font-weight:900;color:#332b31;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v17-meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}.v17-tag{padding:4px 7px;border-radius:999px;background:#fff6fa;border:1px solid #f0dbe4;color:#8c7882;font-size:8px;font-weight:800}.v17-time{font-size:8px;color:#a28e97;margin-top:5px}.v17-actions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}.v17-action{border:1px solid #edd5df;background:#fff;color:#665761;border-radius:9px;padding:7px 9px;font-size:8px;font-weight:900;cursor:pointer;transition:.18s ease}.v17-action:hover{transform:translateY(-1px);border-color:#e2136e;color:#e2136e;box-shadow:0 5px 12px rgba(226,19,110,.1)}.v17-action.danger:hover{border-color:#d93c62;color:#d93c62}.v17-empty{padding:28px 12px;text-align:center;color:#a28f97;font-size:9px}.v17-edit{display:none;padding:10px;margin-top:9px;border-top:1px dashed #ead6df}.v17-edit.open{display:grid;grid-template-columns:1fr 150px auto;gap:7px;animation:v17Rise .25s ease}.v17-edit input,.v17-edit select{width:100%;box-sizing:border-box;border:1px solid #ead6df;border-radius:10px;padding:8px;font-size:9px;outline:none;background:#fff}.v17-edit input:focus,.v17-edit select:focus{border-color:#e2136e;box-shadow:0 0 0 3px rgba(226,19,110,.06)}.v17-edit .btn{font-size:9px!important;padding:8px 10px!important}.v17-refresh{border:0;background:transparent;color:#e2136e;font-size:9px;font-weight:900;cursor:pointer}.v17-subtle{font-size:8px;color:#9a8991;margin:0 10px 8px}
+@keyframes v17Rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}@keyframes v17Item{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+@media(max-width:560px){.v17-item{grid-template-columns:48px minmax(0,1fr)}.v17-thumb{width:48px;height:48px}.v17-actions{grid-column:2;justify-content:flex-start}.v17-edit.open{grid-template-columns:1fr}.v17-library-head{padding:13px}.v17-list{padding:8px}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="menu-overlay" id="menuOverlay" onclick="toggleSide(false)"></div><aside class="sidebar" id="sidebar"><button class="menu-close" type="button" onclick="toggleSide(false)">×</button><div class="brand"><b>MY OVERTIME</b><span>Administrator Control Panel</span></div>
+<nav class="nav"><button class="active" onclick="page('dashboard',this)">Dashboard</button><button onclick="page('active',this)">Active Account</button><button onclick="page('total',this)">Total Account</button><button onclick="page('feedback',this)">Feedback Message <span id="feedbackNavCount" style="float:right;background:#fff0f6;color:#e2136e;border-radius:9px;padding:3px 7px;font-size:9px">0</span></button><button onclick="page('myroom',this)">My Room <span id="roomNavCount" style="float:right;background:#fff0f6;color:#e2136e;border-radius:9px;padding:3px 7px;font-size:9px">0</span></button><button onclick="page('adda',this)">ADDA <span id="addaLiveNav" style="float:right;background:#fff0f6;color:#e2136e;border-radius:9px;padding:3px 7px;font-size:9px">OFF</span></button></nav>
+<div class="side-bottom"><span class="dot"></span>Firebase Live Sync<br><span style="margin-left:13px">Data changes update automatically.</span></div></aside>
+<main class="main"><div class="top"><div class="title-wrap"><div class="title-line"><button class="mobile-menu" type="button" onclick="toggleSide(true)">Menu</button><h1 id="title">Dashboard</h1></div><p id="subtitle">Account activity, updates and notices</p></div><div class="status"><span class="dot"></span><span id="syncText">Live</span></div></div>
+
+<section id="dashboard" class="page active">
+<div class="cards"><div class="stat"><small>Active Users</small><b id="activeCount">0</b></div><div class="stat"><small>Inactive Users</small><b id="inactiveCount">0</b></div><div class="stat"><small>Last Active Time</small><b id="lastActive" style="font-size:14px">—</b></div><div class="stat"><small>Latest Update</small><b id="updateCount">0</b></div><div class="stat"><small>Daily User</small><b id="dailyCount">0</b></div></div>
+<div id="v13MediaManager" class="box v14-publisher">
+  <div class="v14-pub-head">
+    <div><div class="v14-kicker">ONE PLACE</div><h2>Publish Update</h2><p>এক জায়গা থেকেই Notice, Popular Notice ও Text প্রকাশ করুন।</p></div>
+    <span class="v14-live">● LIVE</span>
+  </div>
+  <div class="v14-type-row" id="v14TypeRow">
+    <button type="button" class="v14-type active" data-type="text" onclick="v14SelectType('text')"><span></span><b>Text</b></button>
+  </div>
+  <div class="v14-target-row">
+    <span>Publish to</span>
+    <button type="button" class="v14-target active" data-target="notice" onclick="v14SelectTarget('notice')"> Notice</button>
+    <button type="button" class="v14-target" data-target="popular" onclick="v14SelectTarget('popular')"> Popular Notice / Popup</button>
+  </div>
+  <input id="v14Title" class="v14-input" maxlength="100" placeholder="Title (optional)">
+  <textarea id="v14Text" class="v14-textarea" maxlength="500" placeholder="Write your text here..."></textarea>
+  <div class="v14-pub-actions">
+    <button class="btn pink v14-publish" type="button" onclick="v14Publish()">Publish Now</button>
+    <button class="btn white" type="button" onclick="v14Clear()">Clear</button>
+  </div>
+  <div id="v14State" class="v14-state">Ready to publish</div>
+</div>
+<div class="box v17-library">
+  <div class="v17-library-head"><div><h3>Published Updates</h3><p>Published Text can be viewed, edited or deleted here.</p></div><div style="display:flex;align-items:center;gap:8px"><span id="v17Count" class="v17-count">0</span><button class="v17-refresh" type="button" onclick="v17Load()">Refresh</button></div></div>
+  <div class="v17-subtle">Deleting an active update also removes it from the current User display.</div>
+  <div id="v17List" class="v17-list"><div class="v17-empty">No published updates yet.</div></div>
+</div>
+
+</section>
+
+<section id="active" class="page"><div class="toolbar"><input id="activeSearch" class="search" placeholder="Search by Name / Employee ID / Office / Section" oninput="renderActive()"><div class="count" id="activeListCount">0 Active</div></div><div class="accounts"><div class="box list" id="activeList"></div><div class="box detail" id="activeDetail"><div class="empty">Select an Active Account from the left</div></div></div></section>
+
+<section id="feedback" class="page">
+<div class="toolbar">
+  <input id="feedbackSearch" class="search" placeholder="Search Account / Name / Message" oninput="renderFeedback()">
+  <div class="count" id="feedbackCount">0 Accounts</div>
+</div>
+<div class="box" style="margin-bottom:14px">
+  <h2>Messenger</h2>
+  <p style="margin:0;color:#8a7d85;font-size:11px">একটি Account-এ ক্লিক করলে শুধু সেই User-এর Messenger conversation খুলবে।</p>
+</div>
+<div id="feedbackAccounts" class="feedback-accounts"><div class="empty">No Feedback Message</div></div>
+<div id="feedbackMessenger" class="feedback-messenger-wrap" style="display:none"></div>
+</section>
+
+<section id="myroom" class="page">
+<div class="room-admin-grid">
+  <div class="room-admin-hero">
+    <div><div class="room-admin-title">My Room</div><div class="room-admin-sub">Realtime messages, notices and account controls</div></div>
+    <div class="room-admin-count"><span id="roomAdminMessageCount">0</span><small>Messages</small></div>
+  </div>
+  <div class="room-admin-layout">
+    <div class="box room-admin-users"><div class="room-admin-head"><h2>Users</h2><input id="roomAdminSearch" class="search" placeholder="Search user / ID" oninput="renderMyRoomAdmin()"></div><div id="roomAdminUsersList" class="room-user-list"><div class="empty">Loading users…</div></div></div>
+    <div class="box room-admin-chat">
+      <div class="room-admin-chat-head"><div><h2 id="roomAdminSelectedName">All Room Messages</h2><span id="roomAdminSelectedId">See every user's messages</span></div><button class="btn white" type="button" onclick="roomAdminClearSelection()">All</button></div>
+      <div id="roomAdminMessages" class="room-admin-messages"><div class="empty">No messages yet</div></div>
+      <div class="room-admin-composer"><textarea id="roomAdminInput" maxlength="300" placeholder="Send a message to everyone…"></textarea><div class="btnrow"><button class="btn pink" onclick="roomAdminSend()">Send to Everyone</button><button class="btn white" onclick="roomAdminClearInput()">Clear</button></div></div>
+    </div>
+  </div>
+  <div class="box room-admin-reports"><div class="room-admin-head"><div><h2>Reports</h2><span>User reports and moderation requests</span></div><div class="room-admin-report-count" id="roomAdminReportCount">0</div></div><div id="roomAdminReportsList" class="room-admin-reports-list"><div class="empty">No Reports</div></div></div>
+  <div class="box room-admin-notice-box"><h2>Room Notice</h2><textarea id="roomAdminNotice" placeholder="This notice will appear for all users inside My Overtime Room"></textarea><div class="btnrow"><button class="btn pink" onclick="roomAdminPublishNotice()">Publish Notice</button><button class="btn danger" onclick="roomAdminRemoveNotice()">Remove Notice</button></div></div>
+</div>
+</section>
+
+<section id="adda" class="page"><div class="adda-live"><div class="adda-premium-hero"><div class="adda-hero-top"><div><div class="adda-brand-mark"><span class="adda-wave-mini"><i></i><i></i><i></i><i></i><i></i></span><span>ADDA</span></div><div class="adda-hero-title">Live Audio Room</div><div class="adda-hero-sub">Real-time voice conversation with your users. Allow a speaker and both sides can talk while everyone listens.</div></div><span id="addaLiveBadge" class="live-badge">OFFLINE</span></div><div class="adda-voice-panel"><div class="adda-voice-label"><span>Voice Activity</span><b id="addaVoiceState">Listening</b></div><div id="addaAdminVoiceBars" class="adda-voice-bars" aria-label="Admin voice activity"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="adda-voice-caption">The bars rise and fall with live speech</div></div><div class="live-controls"><button id="addaStartBtn" class="btn pink" onclick="addaStartLive()">Start Live</button><button id="addaEndBtn" class="btn danger" onclick="addaEndLive()" style="display:none">End Live</button></div><div class="live-stat-grid"><div class="live-stat"><small>Connected Users</small><b id="addaListeners">0</b></div><div class="live-stat"><small>Mic Requests</small><b id="addaRequests">0</b></div><div class="live-stat"><small>Speaker</small><b id="addaSpeaker">Admin</b></div><div class="live-stat"><small>Live Duration</small><b id="addaDuration">00:00:00</b></div></div></div><div class="box adda-box"><div class="adda-box-head"><div><h2>Mic Requests</h2><span>Users waiting for speaking permission</span></div><div class="adda-box-pill" id="addaRequestPill">0</div></div><div id="addaRequestsList" class="feed"><div class="empty">No Mic Requests</div></div></div><div class="box adda-box"><div class="adda-box-head"><div><h2>Current Speaker</h2><span>Everyone can hear the active speakers</span></div><div class="adda-box-pill live-pill">LIVE</div></div><div id="addaSpeakerList" class="feed"><div class="empty">Only Admin is speaking</div></div></div><div class="box adda-box"><div class="adda-box-head"><div><h2>Live Comments</h2><span>Realtime comments from Users with Account ID</span></div><div class="adda-box-pill" id="addaCommentCount">0</div></div><div id="addaCommentsList" class="feed"><div class="empty">No Comments</div></div></div></div></section><section id="total" class="page"><div class="toolbar"><input id="totalSearch" class="search" placeholder="Search all accounts" oninput="renderTotal()"><div class="count" id="totalListCount">0 Accounts</div></div><div class="box" style="margin-bottom:14px"><h2>Location Overview</h2><div class="locations" id="locations"></div></div><div class="box"><h2>All Accounts</h2><div id="totalList"></div></section>
+</main></div>
+
+
+<div id="confirmModal" class="confirm-modal" aria-hidden="true">
+  <div class="confirm-box" role="dialog" aria-modal="true">
+    <div class="confirm-title">Confirm</div>
+    <div id="confirmText" class="confirm-text"></div>
+    <div class="confirm-actions">
+      <button class="btn white" type="button" onclick="closeConfirmBox(false)">Cancel</button>
+      <button class="btn pink" type="button" onclick="closeConfirmBox(true)">OK</button>
+    </div>
+  </div>
+</div>
+<div id="toast" style="position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:11px 15px;border-radius:10px;font-size:11px;display:none;z-index:99"></div>
+<script>
+const firebaseConfig={apiKey:"AIzaSyA72vpoVjjuLpU3UJA1Y5j-aX1A1tsoPKY",authDomain:"my-overtime-9a89b.firebaseapp.com",databaseURL:"https://my-overtime-9a89b-default-rtdb.firebaseio.com",projectId:"my-overtime-9a89b",storageBucket:"my-overtime-9a89b.firebasestorage.app",messagingSenderId:"413075154428",appId:"1:413075154428:web:76ebdfcf815ccd79d23e79",measurementId:"G-5N3FXNJ9FD"};
+firebase.initializeApp(firebaseConfig);const db=firebase.database(),usersRef=db.ref('myOvertimeUsers');let users={},selected=null;
+const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+const fmt=t=>{if(!t)return '—';const d=new Date(Number(t));return isNaN(d)?'—':d.toLocaleString('bn-BD')};
+const last=d=>Number(d?.lastSeen||d?.lastActive||d?.updatedAt||d?.activity?.lastActive||d?.activity?.lastSeen||0);
+const isActive=d=>last(d)>Date.now()-30*60*1000;
+const loc=d=>d?.profile?.location||d?.location||d?.profile?.office||'—';
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.style.display='block';setTimeout(()=>e.style.display='none',2200)}
+function page(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');const meta={dashboard:['Dashboard','Account activity, updates and notices'],active:['Active Account','Only currently active accounts are shown here'],total:['Total Account','All registered accounts and their locations'],feedback:['Feedback Message','User feedback, replies and message management'],myroom:['My Room','Realtime User Messages, Notices and Controls'],adda:['ADDA','Live Audio, Connected Users, Mic Requests and User Speakers']};document.getElementById('title').textContent=meta[id][0];document.getElementById('subtitle').textContent=meta[id][1];toggleSide(false);if(id==='active')renderActive();if(id==='total')renderTotal();if(id==='feedback')renderFeedback();if(id==='myroom')renderMyRoomAdmin()}
+function toggleSide(force){const s=document.getElementById('sidebar'),o=document.getElementById('menuOverlay');const open=force===true || (force===undefined && !s.classList.contains('open'));s.classList.toggle('open',open);o.classList.toggle('show',open)}
+function nameOf(k,d){return d?.profile?.name||d?.name||'Unnamed User'}
+function userCard(k,d,activeClass=false){const n=nameOf(k,d),p=d?.profile||{};return `<div class="user ${selected===k&&activeClass?'selected':''}" onclick="selectUser('${esc(k)}')"><div class="user-top"><div class="avatar">${esc(n.trim().charAt(0).toUpperCase()||'U')}</div><div class="u-main"><strong>${esc(n)}</strong><div class="muted">ID: ${esc(p.id||'—')}</div></div></div><div class="tags"><span class="tag">${esc(p.office||'No Office')}</span><span class="tag gray">${esc(p.section||'No Section')}</span></div><div class="muted">Last Active: ${esc(fmt(last(d)))}</div></div>`}
+function renderActive(){const q=(document.getElementById('activeSearch').value||'').toLowerCase();const a=Object.entries(users).filter(([k,d])=>isActive(d)&&(!q||[k,nameOf(k,d),d?.profile?.id,d?.profile?.office,d?.profile?.section].some(v=>String(v||'').toLowerCase().includes(q))));document.getElementById('activeListCount').textContent=a.length+' Active';document.getElementById('activeList').innerHTML=a.length?a.map(x=>userCard(x[0],x[1],true)).join(''):'<div class="empty">No Active Accounts</div>'}
+function accountOtStats(d){const list=Array.isArray(d?.overtime)?d.overtime:[];let hours=0,amount=0,allowance=0;list.forEach(x=>{const h=Number(x?.hours)||0;hours+=h;amount+=Number(x?.otAmount)||h*(Number(d?.salary?.otRate)||0);allowance+=Number(x?.allowance)||Number(x?.tiffin||0)+Number(x?.night||0);});return {count:list.length,hours,amount,allowance,total:amount+allowance};}
+function totalCard(k,d){const n=(d?.setupComplete===false?'Setup Required':nameOf(k,d)),p=d?.profile||{};return `<div class="user total-user-card"><div class="total-account-main"><div class="user-top"><div class="avatar">${esc(n.trim().charAt(0).toUpperCase()||'U')}</div><div class="u-main"><strong>${esc(n)}</strong><div class="muted">ID: ${esc(p.id||k)}</div><div class="muted">${esc(p.office||'No Office')} • ${esc(loc(d))}</div></div><span class="total-status ${isActive(d)?'on':'off'}">${isActive(d)?'LIVE':'OFF'}</span></div></div><div class="total-card-actions"><button type="button" class="btn pink small-btn profile-btn" data-total-profile-key="${esc(k)}">Profile</button><button class="btn danger small-btn" onclick="deleteUser('${esc(k)}',event)">Delete Profile</button></div></div>`}
+function renderTotal(){const q=(document.getElementById('totalSearch').value||'').toLowerCase();const a=Object.entries(users).filter(([k,d])=>!q||[k,nameOf(k,d),d?.profile?.id,d?.profile?.office,d?.profile?.location,d?.location].some(v=>String(v||'').toLowerCase().includes(q)));document.getElementById('totalListCount').textContent=a.length+' Accounts';document.getElementById('totalList').innerHTML=a.length?a.map(x=>totalCard(x[0],x[1])).join(''):'<div class="empty">No Accounts</div>';renderLocations()}
+function renderLocations(){const c={};Object.values(users).forEach(d=>{const l=loc(d);c[l]=(c[l]||0)+1});const a=Object.entries(c).sort((x,y)=>y[1]-x[1]);document.getElementById('locations').innerHTML=a.length?a.map(([l,n])=>`<div class="loc"><b>${esc(l)}</b><span>${n}</span></div>`).join(''):'<div class="empty">No Location Data</div>'}
+function kv(k,v){return `<div class="kv"><div class="k">${esc(k)}</div><div class="v">${esc(v===undefined||v===null||v===''?'—':typeof v==='object'?JSON.stringify(v):v)}</div></div>`}
+function section(title,content){return `<div class="detail-section"><header>${esc(title)}</header>${content}</div>`}
+function renderAllData(obj,prefix=''){
+  if(obj===null||obj===undefined) return kv(prefix||'Data','—');
+  if(typeof obj!=='object') return kv(prefix||'Value',obj);
+  let html='';
+  Object.entries(obj).forEach(([key,val])=>{
+    const label=prefix?prefix+'.'+key:key;
+    if(val!==null && typeof val==='object'){
+      html += `<div class="nested-data"><div class="nested-title">${esc(label)}</div>${renderAllData(val,label)}</div>`;
+    }else{
+      html += kv(label,val);
+    }
+  });
+  return html||kv(prefix||'Data','—');
+}
+function renderAllDataRows(obj,prefix){
+  if(obj===null||obj===undefined)return kv(prefix||'Value','—');
+  if(typeof obj!=='object')return kv(prefix||'Value',obj);
+  const entries=Array.isArray(obj)?obj.map((v,i)=>[String(i),v]):Object.entries(obj);
+  if(!entries.length)return kv(prefix||'Value','{}');
+  return entries.map(([key,val])=>{
+    const label=prefix?prefix+'.'+key:key;
+    return (val&&typeof val==='object')?renderAllDataRows(val,label):kv(label,val);
+  }).join('');
+}
+function selectUser(k){
+  selected=k;
+  const d=users[k]||{},p=d.profile||{},s=d.salary||{};
+  const profile=kv('Name',p.name)+kv('Employee ID',p.id||k)+kv('Office',p.office)+kv('Section',p.section)+kv('Join Date',p.join)+kv('Location',p.location||d.location)+kv('Selected Month',d.selectedMonth);
+  const salary=renderAllDataRows(s,'salary');
+  const st=accountOtStats(d); const activity=kv('OT Entries',st.count)+kv('Total OT Hours',st.hours.toFixed(2)+'h')+kv('Total OT Amount','৳'+st.amount.toFixed(0))+kv('Total Allowance','৳'+st.allowance.toFixed(0))+kv('Grand OT Total','৳'+st.total.toFixed(0))+kv('Last Active',fmt(last(d)))+kv('Update Count',d.updateCount||d.latestUpdateCount||d.activity?.updateCount||0)+kv('Setup Complete',d.setupComplete?'Yes':'No')+kv('Cloud Device Key',d.cloudDeviceKey||k);
+  const allData=renderAllDataRows(d,'');
+  document.getElementById('activeDetail').innerHTML=`<div class="profile-head"><h2>${esc(nameOf(k,d))}</h2><span class="tag">${isActive(d)?'ACTIVE':'INACTIVE'}</span></div><div class="subtabs"><button class="active">Profile</button><button onclick="showRaw('${esc(k)}')">A to Z Data</button><button onclick="showEdit('${esc(k)}')">Edit</button></div><div id="detailBody">${section('Profile Information',profile)}${section('All Salary & Allowance Data',salary)}${section('Activity & Sync',activity)}${section('ALL USER DATA — A to Z',allData)}<div class="actions"><button class="btn pink" onclick="showRaw('${esc(k)}')">Open Full JSON</button><button class="btn pink" onclick="showEdit('${esc(k)}')">Edit User</button><button class="btn danger" onclick="deleteUser('${esc(k)}')">Delete User</button></div></div>`;
+}
+function showRaw(k){const d=users[k]||{};document.getElementById('detailBody').innerHTML=`<div class="detail-section"><header>Complete A to Z Data</header><div class="raw"><textarea id="rawJson">${esc(JSON.stringify(d,null,2))}</textarea></div></div><div class="actions"><button class="btn pink" onclick="saveRaw('${esc(k)}')">Save Data</button><button class="btn white" onclick="selectUser('${esc(k)}')">Back to Profile</button></div>`}
+function showEdit(k){const d=users[k]||{},p=d.profile||{},s=d.salary||{};document.getElementById('detailBody').innerHTML=`<div class="detail-section"><header>Edit Account</header><div class="editgrid">${field('Name','eName',p.name)}${field('Employee ID','eId',p.id||k)}${field('Office','eOffice',p.office)}${field('Section','eSection',p.section)}${field('Join Date','eJoin',p.join)}${field('Location','eLocation',p.location||d.location)}${field('Selected Month','eMonth',d.selectedMonth)}${field('Basic Salary','eBasic',s.basic)}${field('OT Rate / Hour','eOt',s.otRate)}${field('Tiffin','eTiffin',s.tiffin)}${field('Night Allowance','eNight',s.night)}${field('Attendance Bonus','eAttendance',s.attendance)}</div></div><div class="actions"><button class="btn pink" onclick="saveEdit('${esc(k)}')">Save Changes</button><button class="btn white" onclick="selectUser('${esc(k)}')">Cancel</button></div>`}
+function field(label,id,val){return `<div class="field"><label>${esc(label)}</label><input id="${id}" value="${esc(val??'')}"></div>`}
+document.addEventListener('click',function(e){
+  const profileBtn=e.target.closest && e.target.closest('[data-total-profile-key]');
+  if(profileBtn){
+    e.preventDefault(); e.stopPropagation();
+    openTotalProfile(profileBtn.getAttribute('data-total-profile-key'));
+    return;
+  }
+  const closeBtn=e.target.closest && e.target.closest('[data-close-total-profile]');
+  if(closeBtn){
+    e.preventDefault(); closeTotalProfile();
+  }
+});
+function openTotalProfile(k,event){
+  if(event && event.stopPropagation) event.stopPropagation();
+  const d=users[k];
+  if(!d){ toast('Account data not found'); return; }
+  const p=d.profile||{}, sal=d.salary||{}, st=accountOtStats(d), list=Array.isArray(d.overtime)?d.overtime:[];
+  const rows=list.slice().reverse().map((x,i)=>{
+    const h=Number(x?.hours)||0, amt=Number(x?.otAmount)||h*(Number(sal.otRate)||0), al=Number(x?.allowance)||Number(x?.tiffin||0)+Number(x?.night||0);
+    return `<div class="total-ot-row"><div><b>${esc(x?.date||x?.day||'—')}</b><span>${h.toFixed(1)}h • OT ${amt.toFixed(0)}৳ • Allowance ${al.toFixed(0)}৳</span></div><strong>${(amt+al).toFixed(0)}৳</strong></div>`;
+  }).join('');
+  document.getElementById('totalProfileBody').innerHTML=`
+    <div class="total-profile-head"><div><h2>${esc(nameOf(k,d))}</h2><p>ID: ${esc(p.id||k)} • ${esc(p.office||'No Office')}</p></div><span class="tag">${isActive(d)?'ACTIVE':'INACTIVE'}</span></div>
+    <div class="total-profile-stats">
+      <div><small>OT Entries</small><b>${st.count}</b></div><div><small>Total Hours</small><b>${st.hours.toFixed(1)}h</b></div>
+      <div><small>OT Amount</small><b>${st.amount.toFixed(0)}৳</b></div><div><small>Allowance</small><b>${st.allowance.toFixed(0)}৳</b></div>
+      <div><small>Grand Total</small><b>${st.total.toFixed(0)}৳</b></div><div><small>Last Active</small><b style="font-size:11px">${esc(d.lastActive?new Date(d.lastActive).toLocaleString():'—')}</b></div>
+    </div>
+    <div class="total-profile-info">
+      <div class="kv"><div class="k">Name</div><div class="v">${esc(nameOf(k,d))}</div></div>
+      <div class="kv"><div class="k">Account ID</div><div class="v">${esc(p.id||k)}</div></div>
+      <div class="kv"><div class="k">Office</div><div class="v">${esc(p.office||'—')}</div></div>
+      <div class="kv"><div class="k">Section</div><div class="v">${esc(p.section||'—')}</div></div>
+      <div class="kv"><div class="k">Location</div><div class="v">${esc(p.location||d.location||'—')}</div></div>
+      <div class="kv"><div class="k">Join Date</div><div class="v">${esc(p.join||'—')}</div></div>
+      <div class="kv"><div class="k">Selected Month</div><div class="v">${esc(d.selectedMonth||'—')}</div></div>
+      <div class="kv"><div class="k">Basic Salary</div><div class="v">${Number(sal.basic)||0}৳</div></div>
+      <div class="kv"><div class="k">OT Rate</div><div class="v">${Number(sal.otRate)||0}৳</div></div>
+      <div class="kv"><div class="k">Tiffin</div><div class="v">${Number(sal.tiffin)||0}৳</div></div>
+      <div class="kv"><div class="k">Night Allowance</div><div class="v">${Number(sal.night)||0}৳</div></div>
+    </div>
+    <div class="total-profile-ot"><h3>Overtime History</h3>${rows||'<div class="empty">No Overtime Added</div>'}</div>
+    <div class="actions total-profile-actions"><button class="btn pink" onclick="editTotalProfile('${esc(k)}')">Edit Profile</button><button class="btn danger" onclick="deleteUser('${esc(k)}',event);closeTotalProfile()">Delete Profile</button></div>`;
+  const modal=document.getElementById('totalProfileModal');
+  modal.classList.add('show'); modal.setAttribute('aria-hidden','false');
+}
+function closeTotalProfile(){const m=document.getElementById('totalProfileModal');if(m){m.classList.remove('show');m.setAttribute('aria-hidden','true');}}
+function editTotalProfile(k){
+  const d=users[k]||{}, p=d.profile||{}, s=d.salary||{};
+  document.getElementById('totalProfileBody').innerHTML=`
+    <div class="total-profile-edit-head"><div><h2>Edit Profile</h2><p>${esc(nameOf(k,d))} • ID ${esc(p.id||k)}</p></div><button class="total-profile-back" onclick="openTotalProfile('${esc(k)}')">Back</button></div>
+    <div class="total-profile-edit-grid">
+      ${editField('eTPName','Name',nameOf(k,d))}${editField('eTPId','Account ID',p.id||k)}
+      ${editField('eTPOffice','Office',p.office||'')}${editField('eTPSection','Section',p.section||'')}
+      ${editField('eTPLocation','Location',p.location||d.location||'')}${editField('eTPJoin','Join Date',p.join||'')}
+      ${editField('eTPMonth','Selected Month',d.selectedMonth||'')}${editField('eTPBasic','Basic Salary',s.basic||0,'number')}
+      ${editField('eTPRate','OT Rate',s.otRate||0,'number')}${editField('eTPTiffin','Tiffin',s.tiffin||0,'number')}
+      ${editField('eTPNight','Night Allowance',s.night||0,'number')}
+    </div>
+    <div class="actions total-profile-actions"><button class="btn pink" onclick="saveTotalProfile('${esc(k)}')">Save Changes</button><button class="btn white" onclick="openTotalProfile('${esc(k)}')">Cancel</button></div>`;
+}
+function editField(id,label,val,type='text'){return `<div class="field"><label>${esc(label)}</label><input id="${id}" type="${type}" value="${esc(val??'')}"></div>`;}
+async function saveTotalProfile(k){
+  try{
+    const old=users[k]; if(!old){toast('Account data not found');return;}
+    const d=JSON.parse(JSON.stringify(old)); d.profile=d.profile||{}; d.salary=d.salary||{};
+    d.profile.name=document.getElementById('eTPName').value.trim();
+    d.profile.id=document.getElementById('eTPId').value.trim();
+    d.profile.office=document.getElementById('eTPOffice').value.trim(); d.profile.section=document.getElementById('eTPSection').value.trim();
+    d.profile.location=document.getElementById('eTPLocation').value.trim(); d.location=d.profile.location; d.profile.join=document.getElementById('eTPJoin').value.trim();
+    d.selectedMonth=document.getElementById('eTPMonth').value.trim(); d.salary.basic=Number(document.getElementById('eTPBasic').value)||0; d.salary.otRate=Number(document.getElementById('eTPRate').value)||0; d.salary.tiffin=Number(document.getElementById('eTPTiffin').value)||0; d.salary.night=Number(document.getElementById('eTPNight').value)||0;
+    d.updatedAt=Date.now(); d.adminUpdatedAt=d.updatedAt; d.adminEdited=true; d.cloudDeviceKey=d.cloudDeviceKey||k;
+    const oldPid=String(old?.profile?.id||'').trim().replace(/[^a-zA-Z0-9_-]/g,'_'), newPid=String(d.profile.id||'').trim().replace(/[^a-zA-Z0-9_-]/g,'_');
+    const updates={}; updates['myOvertimeUsers/'+k]=d; updates['myOvertimeAdmin/deletedAccounts/'+k]=null; if(oldPid&&oldPid!==newPid) updates['myOvertimeUsersById/'+oldPid]=null; if(newPid) updates['myOvertimeUsersById/'+newPid]=d;
+    await db.ref().update(updates); await db.ref('myOvertimeAdmin/latestUpdateCount').transaction(v=>Number(v||0)+1);
+    users[k]=d; renderTotal(); renderActive(); openTotalProfile(k); toast('Profile updated successfully');
+  }catch(e){console.error(e);toast('Profile update failed: '+(e&&e.message?e.message:'Network/Permission error'));}
+}
+async function saveEdit(k){
+  try{
+    const old=users[k]||{}, d=JSON.parse(JSON.stringify(old));
+    const oldPid=String(old?.profile?.id||'').trim().replace(/[^a-zA-Z0-9_-]/g,'_');
+    d.profile=d.profile||{}; d.salary=d.salary||{};
+    d.profile.name=document.getElementById('eName').value.trim();
+    d.profile.id=document.getElementById('eId').value.trim()||k;
+    d.profile.office=document.getElementById('eOffice').value.trim();
+    d.profile.section=document.getElementById('eSection').value.trim();
+    d.profile.join=document.getElementById('eJoin').value.trim();
+    d.profile.location=document.getElementById('eLocation').value.trim();
+    d.location=d.profile.location;
+    d.selectedMonth=document.getElementById('eMonth').value.trim();
+    d.salary.basic=Number(document.getElementById('eBasic').value)||0;
+    d.salary.otRate=Number(document.getElementById('eOt').value)||0;
+    d.salary.tiffin=Number(document.getElementById('eTiffin').value)||0;
+    d.salary.night=Number(document.getElementById('eNight').value)||0;
+    d.salary.attendance=Number(document.getElementById('eAttendance').value)||0;
+    d.updatedAt=Date.now(); d.adminUpdatedAt=d.updatedAt; d.adminEdited=true; d.cloudDeviceKey=d.cloudDeviceKey||k;
+    const newPid=String(d?.profile?.id||'').trim().replace(/[^a-zA-Z0-9_-]/g,'_');
+    const updates={}; updates['myOvertimeUsers/'+k]=d; updates['myOvertimeAdmin/deletedAccounts/'+k]=null;
+    if(oldPid && oldPid!==newPid) updates['myOvertimeUsersById/'+oldPid]=null;
+    if(newPid) updates['myOvertimeUsersById/'+newPid]=d;
+    await db.ref().update(updates);
+    await db.ref('myOvertimeAdmin/latestUpdateCount').transaction(v=>Number(v||0)+1);
+    users[k]=d; renderTotal(); renderActive(); if(document.getElementById('totalProfileModal')?.classList.contains('show')) openTotalProfile(k); else selectUser(k); toast('User updated successfully');
+  }catch(e){console.error(e);toast('Update failed: '+(e&&e.message?e.message:'Permission/Network error'))}
+}
+function saveRaw(k){
+  try{
+    const d=JSON.parse(document.getElementById('rawJson').value), old=users[k]||{};
+    const oldPid=String(old?.profile?.id||'').trim().replace(/[^a-zA-Z0-9_-]/g,'_');
+    d.updatedAt=Date.now(); d.adminUpdatedAt=d.updatedAt; d.adminEdited=true; d.cloudDeviceKey=d.cloudDeviceKey||k;
+    const pid=String(d?.profile?.id||'').trim().replace(/[^a-zA-Z0-9_-]/g,'_');
+    const updates={}; updates['myOvertimeUsers/'+k]=d;
+    if(oldPid && oldPid!==pid) updates['myOvertimeUsersById/'+oldPid]=null;
+    if(pid) updates['myOvertimeUsersById/'+pid]=d;
+    db.ref().update(updates).then(()=>db.ref('myOvertimeAdmin/latestUpdateCount').transaction(v=>Number(v||0)+1)).then(()=>{
+      users[k]=d; selectUser(k); renderTotal(); renderActive(); toast('All User Data saved');
+    });
+  }catch(e){console.error(e);toast('Invalid JSON — Save failed')}
+}
+async function deleteUser(k){
+  const n=nameOf(k,users[k]);
+  askConfirm('"'+n+'" Delete this account permanently?',async()=>{
+    try{
+      const d=users[k]||{}, pid=String(d?.profile?.id||'').trim().replace(/[^a-zA-Z0-9_-]/g,'_');
+      const updates={}; updates['myOvertimeUsers/'+k]=null;
+      if(pid) updates['myOvertimeUsersById/'+pid]=null;
+      updates['myOvertimeAdmin/deletedAccounts/'+k]={deletedAt:Date.now(),name:n,profileId:pid||''};
+      await db.ref().update(updates);
+      await db.ref('myOvertimeAdmin/latestUpdateCount').transaction(v=>Number(v||0)+1);
+      delete users[k]; if(selected===k)selected=null;
+      renderTotal(); renderActive();
+      document.getElementById('activeDetail').innerHTML='<div class="empty">Account deleted</div>';
+      toast('Account deleted successfully');
+    }catch(e){console.error(e);toast('Delete failed: '+(e&&e.message?e.message:'Permission/Network error'))}
+  });
+}
+function resetUserAccount(k,event){if(event)event.stopPropagation();deleteUser(k,event)}
+
+let confirmAction=null;function askConfirm(message,action){document.getElementById('confirmText').textContent=message;confirmAction=action;document.getElementById('confirmModal').classList.add('show');document.getElementById('confirmModal').setAttribute('aria-hidden','false')}function closeConfirmBox(ok){const m=document.getElementById('confirmModal');m.classList.remove('show');m.setAttribute('aria-hidden','true');const fn=confirmAction;confirmAction=null;if(ok&&typeof fn==='function')fn()}
+
+let feedbackData={},selectedFeedbackAccount=null;
+
+function feedbackName(k,d){
+  const id=String(d?.user?.id||d?.profile?.id||d?.employeeId||d?.userId||'').trim();
+  if(d?.user?.name||d?.profile?.name||d?.name||d?.userName||d?.accountName) return d?.user?.name||d?.profile?.name||d?.name||d?.userName||d?.accountName;
+  const match=Object.values(users||{}).find(u=>String(u?.profile?.id||'').trim()===id);
+  return match?.profile?.name||'Unknown User';
+}
+function feedbackAccount(k,d){return String(d?.user?.id||d?.profile?.id||d?.employeeId||d?.userId||'').trim()||'—'}
+function feedbackOffice(d){return d?.user?.office||d?.profile?.office||d?.office||'No Office'}
+function feedbackSection(d){return d?.user?.section||d?.profile?.section||d?.section||'No Section'}
+function feedbackJoin(d){return d?.user?.join||d?.profile?.join||d?.join||''}
+function feedbackDevice(d){return d?.deviceId||''}
+function feedbackText(d){return d?.message||d?.text||d?.feedback||d?.content||''}
+function feedbackTime(d){return d?.createdAt||d?.timestamp||d?.sentAt||d?.updatedAt||0}
+function feedbackReply(d){return d?.adminReply||d?.reply||''}
+function feedbackInitial(name){const v=String(name||'U').trim();return esc((v.charAt(0)||'U').toUpperCase())}
+function accountKeyFor(k,d){return feedbackAccount(k,d)!=='—'?feedbackAccount(k,d):(feedbackDevice(d)||k)}
+function getFeedbackGroups(){
+  const groups={};
+  Object.entries(feedbackData||{}).forEach(([k,d])=>{
+    const gk=accountKeyFor(k,d);
+    if(!groups[gk]) groups[gk]={key:gk,items:[],name:feedbackName(k,d),account:feedbackAccount(k,d),deviceId:feedbackDevice(d),office:feedbackOffice(d),section:feedbackSection(d),join:feedbackJoin(d)};
+    groups[gk].items.push({k,d});
+    const n=feedbackName(k,d); if(groups[gk].name==='Unknown User'&&n!=='Unknown User')groups[gk].name=n;
+    if(!groups[gk].deviceId&&feedbackDevice(d))groups[gk].deviceId=feedbackDevice(d);
+  });
+  Object.values(groups).forEach(g=>g.items.sort((a,b)=>Number(feedbackTime(a.d))-Number(feedbackTime(b.d))));
+  return Object.values(groups).sort((a,b)=>Number(feedbackTime(b.items[b.items.length-1]?.d))-Number(feedbackTime(a.items[a.items.length-1]?.d)));
+}
+function findUserForGroup(g){
+  const arr=Object.entries(users||{});
+  return arr.find(([key,u])=>String(u?.profile?.id||'').trim()===String(g.account||'').trim())?.[1]||{};
+}
+function renderFeedback(){
+  const q=(document.getElementById('feedbackSearch')?.value||'').toLowerCase().trim();
+  let groups=getFeedbackGroups();
+  groups=groups.filter(g=>{const hay=[g.key,g.name,g.account,g.office,g.section,...g.items.map(x=>feedbackText(x.d)),...g.items.map(x=>feedbackReply(x.d))].join(' ').toLowerCase();return !q||hay.includes(q)});
+  document.getElementById('feedbackCount').textContent=groups.length+' Accounts';
+  document.getElementById('feedbackNavCount').textContent=groups.length;
+  const box=document.getElementById('feedbackAccounts');
+  if(!groups.length){box.innerHTML='<div class="empty">No Feedback Message</div>';document.getElementById('feedbackMessenger').style.display='none';return;}
+  box.innerHTML=groups.map(g=>{
+    const last=g.items[g.items.length-1], replyCount=g.items.filter(x=>!!feedbackReply(x.d)).length;
+    return `<div class="feedback-account-card ${selectedFeedbackAccount===g.key?'selected':''}" onclick="openFeedbackAccount('${esc(g.key)}')">
+      <div class="feedback-avatar">${feedbackInitial(g.name)}</div>
+      <div class="feedback-account-main"><div class="feedback-account-name">${esc(g.name)}</div><div class="feedback-account-id">Account: ${esc(g.account)}</div><div class="feedback-account-preview">${esc(feedbackText(last?.d)||'No message')}</div></div>
+      <div class="feedback-account-meta"><span class="feedback-count-pill">${g.items.length}</span><span class="feedback-arrow">›</span></div>
+    </div>`;
+  }).join('');
+  if(selectedFeedbackAccount&&groups.some(g=>g.key===selectedFeedbackAccount)) renderFeedbackMessenger(selectedFeedbackAccount);
+}
+function openFeedbackAccount(key){selectedFeedbackAccount=key;renderFeedback();document.getElementById('feedbackMessenger').scrollIntoView({behavior:'smooth',block:'start'})}
+function closeFeedbackAccount(){selectedFeedbackAccount=null;document.getElementById('feedbackMessenger').style.display='none';renderFeedback()}
+function renderFeedbackMessenger(key){
+  const g=getFeedbackGroups().find(x=>x.key===key); const wrap=document.getElementById('feedbackMessenger');
+  if(!g){wrap.style.display='none';return;}
+  const user=findUserForGroup(g);
+  const name=(user?.profile?.name||g.name||'Unknown User');
+  const account=(user?.profile?.id||g.account||'—');
+  const office=user?.profile?.office||g.office, section=user?.profile?.section||g.section, join=user?.profile?.join||g.join;
+  wrap.style.display='block';
+  wrap.innerHTML=`<div class="feedback-messenger">
+    <div class="messenger-head"><button class="messenger-back" type="button" onclick="closeFeedbackAccount()">‹</button><div class="feedback-avatar">${feedbackInitial(name)}</div><div class="messenger-head-main"><div class="messenger-head-name">${esc(name)}</div><div class="messenger-head-id">Account: ${esc(account)}${office&&office!=='No Office'?' • '+esc(office):''}</div></div><span class="messenger-status">LIVE</span><button class="messenger-profile-delete" type="button" onclick="deleteFeedbackProfile('${esc(key)}')">Delete Profile</button></div>
+    <div class="messenger-body">${g.items.map(({k,d})=>`<div class="chat-row user"><div class="chat-label">USER</div><div class="user-message-bubble">${esc(feedbackText(d)||'—')}</div><div class="message-time">${esc(fmt(feedbackTime(d)))}</div><button class="chat-delete" type="button" onclick="deleteFeedback('${esc(k)}')">Delete message</button></div>${feedbackReply(d)?`<div class="chat-row admin"><div class="chat-label">ADMIN</div><div class="admin-message-bubble">${esc(feedbackReply(d))}</div><div class="message-time">${esc(fmt(d.repliedAt||d.updatedAt||feedbackTime(d)))}</div></div>`:''}`).join('')}</div>
+    <div class="admin-composer"><div class="admin-composer-title">Admin Reply</div><textarea id="inlineReplyText" placeholder="Write Admin Reply here..."></textarea><div class="btnrow"><button class="btn pink" type="button" onclick="sendInlineFeedbackReply('${esc(key)}')">Send Reply</button></div></div>
+  </div>`;
+}
+async function sendInlineFeedbackReply(groupKey){
+  const g=getFeedbackGroups().find(x=>x.key===groupKey); if(!g)return;
+  const el=document.getElementById('inlineReplyText'),text=(el?.value||'').trim(); if(!text){toast('Write a reply first');return;}
+  try{
+    const now=Date.now();
+    for(const item of g.items){
+      const k=item.k,d=item.d;
+      const base=db.ref('myOvertimeAdmin/feedbackMessages/'+k);
+      await base.update({adminReply:text,repliedAt:now,replyActive:true,status:'replied'});
+      if(d.deviceId){
+        const safe=String(d.deviceId).replace(/[.#$\[\]\/]/g,'_');
+        await db.ref('myOvertimeAdmin/userReplies/'+safe+'/'+k).set({message:text,adminReply:text,feedbackKey:k,repliedAt:now,active:true,user:d.user||{}});
+      }
+    }
+    el.value=''; renderFeedbackMessenger(groupKey); toast('Admin Reply sent to User');
+  }catch(e){console.error(e);toast('Reply failed');}
+}
+function deleteFeedback(k){
+  const d=feedbackData[k]||{},name=feedbackName(k,d);
+  askConfirm('"'+name+'" — Delete this feedback message?',async()=>{try{await db.ref('myOvertimeAdmin/feedbackMessages/'+k).remove();toast('Feedback deleted');}catch(e){console.error(e);toast('Feedback delete failed');}});
+}
+async function deleteFeedbackProfile(groupKey){
+  const g=getFeedbackGroups().find(x=>x.key===groupKey); if(!g)return;
+  const user=findUserForGroup(g);
+  const userKey=Object.entries(users||{}).find(([key,u])=>u===user)?.[0] || Object.entries(users||{}).find(([key,u])=>String(u?.profile?.id||'').trim()===String(g.account||'').trim())?.[0] || '';
+  const name=(user?.profile?.name||g.name||'Unknown User');
+  askConfirm('"'+name+'" — Delete this profile, all feedback messages and replies?',async()=>{
+    try{
+      const updates={};
+      if(userKey) updates['myOvertimeUsers/'+userKey]=null;
+      g.items.forEach(item=>{updates['myOvertimeAdmin/feedbackMessages/'+item.k]=null; if(item.d?.deviceId){const safe=String(item.d.deviceId).replace(/[.#$\[\]\/]/g,'_');updates['myOvertimeAdmin/userReplies/'+safe+'/'+item.k]=null;}});
+      await db.ref().update(updates);
+      selectedFeedbackAccount=null;
+      document.getElementById('feedbackMessenger').style.display='none';
+      toast('Profile and all messages deleted');
+    }catch(e){console.error(e);toast('Profile delete failed');}
+  });
+}
+db.ref('myOvertimeAdmin/feedbackMessages').on('value',snap=>{feedbackData=snap.val()||{};renderFeedback();});
+
+const addaRef=db.ref('myOvertimeAdmin/adda');let addaState={active:false,requests:{},speakers:{}};function formatDuration(ms){ms=Math.max(0,Number(ms)||0);var sec=Math.floor(ms/1000),h=Math.floor(sec/3600);sec%=3600;var m=Math.floor(sec/60);sec%=60;return [h,m,sec].map(function(x){return String(x).padStart(2,'0')}).join(':')}
+function renderAddaComments(c){var box=document.getElementById('addaCommentsList'),cnt=document.getElementById('addaCommentCount');var arr=Object.entries(c||{}).map(function(e){return [e[0],e[1]]}).filter(function(e){return e[1]&&e[1].text}).sort(function(x,y){return Number(x[1].createdAt||0)-Number(y[1].createdAt||0)}).slice(-100);if(cnt)cnt.textContent=String(arr.length);if(!box)return;box.innerHTML=arr.length?arr.map(function(e){var k=e[0],x=e[1];return '<div class="live-request adda-comment-card"><div class="live-request-main"><b>'+esc(x.name||'User')+'</b><span>ID: '+esc(x.account||x.deviceId||k)+' • '+esc(fmt(x.createdAt))+'</span><div class="adda-comment-text">'+esc(x.text)+'</div></div><button class="btn danger adda-comment-delete" type="button" onclick="addaDeleteComment(\''+esc(k).replace(/'/g,'&#039;')+'\')">Delete</button></div>'}).join(''):'<div class="empty">No Comments</div>'}
+function addaRender(){const a=!!addaState.active,b=document.getElementById('addaLiveBadge');if(!b)return;b.textContent=a?'LIVE':'OFFLINE';b.className='live-badge'+(a?' on':'');var de=document.getElementById('addaDuration');if(de)de.textContent=a?formatDuration(Date.now()-Number(addaState.startedAt||Date.now())):'00:00:00';document.getElementById('addaStartBtn').style.display=a?'none':'inline-block';document.getElementById('addaEndBtn').style.display=a?'inline-block':'none';document.getElementById('addaListeners').textContent=Number(addaState.listenerCount||0);const q=Object.entries(addaState.requests||{}).filter(([id,r])=>r&&r.status==='pending');document.getElementById('addaRequests').textContent=q.length;var rp=document.getElementById('addaRequestPill');if(rp)rp.textContent=q.length;document.getElementById('addaSpeaker').textContent=Object.keys(addaState.speakers||{}).length?'Admin + User':'Admin';document.getElementById('addaLiveNav').textContent=a?'LIVE':'OFF';document.getElementById('addaRequestsList').innerHTML=q.length?q.map(([id,r])=>`<div class="live-request"><div class="live-request-main"><b>${esc(r.name||'User')}</b><span>Account: ${esc(r.account||id)} • ${esc(fmt(r.createdAt))}</span></div><div class="live-request-actions"><button class="btn pink" onclick="addaAllowMic('${esc(id)}')">Allow</button><button class="btn danger" onclick="addaRejectMic('${esc(id)}')">Reject</button></div></div>`).join(''):'<div class="empty">No Mic Requests</div>';const sp=Object.entries(addaState.speakers||{});document.getElementById('addaSpeakerList').innerHTML=sp.length?sp.map(([id,r])=>`<div class="live-request"><div class="live-request-main"><div class="adda-speaker-live"><span class="adda-speaker-dot"></span><b>${esc(r.name||'User')}</b><span class="adda-speaker-bars" data-speaker-id="${esc(id)}"><i></i><i></i><i></i><i></i><i></i></span></div><span>Account: ${esc(r.account||id)} • LIVE SPEAKER</span></div><button class="btn danger" onclick="addaRemoveSpeaker('${esc(id)}')">Remove Mic</button></div>`).join(''):'<div class="empty">Only Admin is speaking</div>'}async function addaStartLive(){try{if(window.__addaAdminStartAudio)await window.__addaAdminStartAudio();await addaRef.child('signaling').remove();await addaRef.update({active:true,adminId:'admin',startedAt:Date.now(),listenerCount:0,requests:{},speakers:{}});if(window.__addaAdminJoin)await window.__addaAdminJoin();toast('ADDA Live started')}catch(e){toast('Microphone permission is required for Live Audio')}}function addaEndLive(){askConfirm('End ADDA Live Audio for all Users?',async()=>{try{if(window.__addaAdminLeave)await window.__addaAdminLeave();await addaRef.update({active:false,endedAt:Date.now(),requests:{},speakers:{},listenerCount:0});await addaRef.child('signaling').remove();toast('ADDA Live ended')}catch(e){toast('End Live failed')}})}async function addaAllowMic(id){try{const r=addaState.requests[id]||{};await addaRef.child('requests/'+id).update({status:'allowed',allowedAt:Date.now()});await addaRef.child('speakers/'+id).set({name:r.name||'User',account:r.account||id,allowedAt:Date.now()});if(window.__addaAdminRefreshPeers)window.__addaAdminRefreshPeers();toast('Mic allowed')}catch(e){toast('Mic allow failed')}}async function addaRejectMic(id){try{await addaRef.child('requests/'+id).update({status:'rejected',rejectedAt:Date.now()});toast('Mic request rejected')}catch(e){toast('Reject failed')}}async function addaRemoveSpeaker(id){try{await addaRef.child('speakers/'+id).remove();await addaRef.child('requests/'+id).update({status:'removed'});if(window.__addaAdminRefreshPeers){await window.__addaAdminRefreshPeers();setTimeout(function(){window.__addaAdminRefreshPeers();},180);}toast('User Mic removed')}catch(e){toast('Remove Mic failed')}}
+window.addaDeleteComment=function(id){id=String(id||'');if(!id)return;askConfirm('Delete this ADDA comment?',async function(){try{await addaRef.child('comments/'+id).remove();toast('Comment deleted')}catch(e){console.error(e);toast('Comment delete failed')}});};
+addaRef.on('value',snap=>{addaState=snap.val()||{active:false,requests:{},speakers:{}};addaRender()});addaRef.child('comments').on('value',snap=>renderAddaComments(snap.val()||{}));setInterval(function(){if(addaState&&addaState.active){var de=document.getElementById('addaDuration');if(de)de.textContent=formatDuration(Date.now()-Number(addaState.startedAt||Date.now()));}},1000);
+// LIVE LISTENER COUNT — use the same participants list that WebRTC Join uses.
+// Only real Users who have successfully joined are counted; Admin is excluded.
+(function(){
+  var participantsRef=addaRef.child('participants');
+  participantsRef.on('value',function(snap){
+    var list=snap.val()||{};
+    var count=0;
+    Object.keys(list).forEach(function(id){
+      var x=list[id];
+      if(x && x.role==='user' && x.online!==false) count++;
+    });
+    var el=document.getElementById('addaListeners');
+    if(el) el.textContent=String(count);
+    var liveBox=document.getElementById('addaSpeaker');
+    if(liveBox && addaState && addaState.active){
+      var userSpeakers=Object.keys(addaState.speakers||{}).length;
+      liveBox.textContent=userSpeakers ? ('Admin + '+userSpeakers+' User'+(userSpeakers===1?'':'s')) : 'Admin';
+    }
+    if(addaState){
+      addaState.listenerCount=count;
+      var badge=document.getElementById('addaLiveBadge');
+      if(badge && addaState.active) badge.title=count+' listener'+(count===1?'':'s')+' online';
+    }
+  });
+})();
+function clearBox(id){document.getElementById(id).value=''}
+function saveNotice(){const text=document.getElementById('noticeText').value.trim();if(!text)return;db.ref('myOvertimeAdmin/notices/current').set({text,updatedAt:Date.now()}).then(()=>{clearBox('noticeText');toast('Notice published')})}
+function savePopular(){const text=document.getElementById('popularText').value.trim();if(!text)return;db.ref('myOvertimeAdmin/popularNotice').set({text,updatedAt:Date.now(),active:true}).then(()=>{clearBox('popularText');toast('Popular Notice published')})}
+function deleteNotice(){askConfirm('Delete the current notice?',()=>db.ref('myOvertimeAdmin/notices/current').remove().then(()=>toast('Notice deleted')).catch(()=>toast('Notice delete failed')))}
+function deletePopular(){askConfirm('Delete the current popular popup?',()=>db.ref('myOvertimeAdmin/popularNotice').remove().then(()=>toast('Popup deleted')).catch(()=>toast('Popup delete failed')))}
+let globalUpdateCount=null;function renderStats(){const a=Object.values(users),active=a.filter(isActive),now=new Date();now.setHours(0,0,0,0);const daily=a.filter(d=>last(d)>=now.getTime()).length;const fallback=a.reduce((n,d)=>n+Number(d?.updateCount||d?.latestUpdateCount||d?.activity?.updateCount||0),0);const updates=globalUpdateCount===null?fallback:Number(globalUpdateCount);document.getElementById('activeCount').textContent=active.length;document.getElementById('inactiveCount').textContent=a.length-active.length;document.getElementById('dailyCount').textContent=daily;document.getElementById('updateCount').textContent=updates;document.getElementById('lastActive').textContent=fmt(Math.max(0,...a.map(last)))}
+db.ref('myOvertimeAdmin/latestUpdateCount').on('value',snap=>{const v=snap.val();if(v===null){globalUpdateCount=null;renderStats();}else{globalUpdateCount=Number(v)||0;renderStats();}});
+usersRef.on('value',snap=>{users=snap.val()||{};if(globalUpdateCount===null){const seed=Object.values(users).reduce((n,d)=>n+Number(d?.updateCount||d?.latestUpdateCount||d?.activity?.updateCount||0),0);if(seed>0)db.ref('myOvertimeAdmin/latestUpdateCount').set(seed);}renderStats();if(document.getElementById('active').classList.contains('active'))renderActive();if(document.getElementById('total').classList.contains('active'))renderTotal();if(selected&&users[selected]&&document.getElementById('active').classList.contains('active'))selectUser(selected);renderFeedback();document.getElementById('syncText').textContent='Live';});
+// Secondary profile-ID index is only a fallback for older/alternate User saves.
+db.ref('myOvertimeUsersById').on('value',snap=>{const byId=snap.val()||{};Object.entries(byId).forEach(([id,d])=>{if(!d)return;const primary=Object.entries(users).find(([k,u])=>String(u?.cloudDeviceKey||'')===String(d?.cloudDeviceKey||'')&&d?.cloudDeviceKey);if(!primary && d.cloudDeviceKey){users[d.cloudDeviceKey]=d;}});renderStats();if(document.getElementById('active').classList.contains('active'))renderActive();if(document.getElementById('total').classList.contains('active'))renderTotal();});
+db.ref('myOvertimeAdmin').on('value',snap=>{const x=snap.val()||{};let h='';if(x.notices?.current?.text)h+=`<div class="feed-item"><div><b>Notice</b><div>${esc(x.notices.current.text)}</div></div><button class="btn danger feed-delete" onclick="deleteNotice()">Delete</button></div>`;if(x.popularNotice?.text)h+=`<div class="feed-item"><div><b>Popular Notice / Popup</b><div>${esc(x.popularNotice.text)}</div></div><button class="btn danger feed-delete" onclick="deletePopular()">Delete</button></div>`;document.getElementById('noticeFeed').innerHTML=h||'<div class="empty">No Notice or Popup</div>'});
+setInterval(renderStats,60000);
+</script>
+
+<style id="adda-webrtc-admin-style">#addaAdminAudioLayer{position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden}</style>
+<div id="addaAdminAudioLayer" aria-hidden="true"></div>
+<script id="adda-webrtc-admin-controller">
+(function(){
+'use strict';
+var db=firebase.database(),roomRef=db.ref('myOvertimeAdmin/adda'),joined=false,localStream=null,peers={},audioCtx=null,localAnalyser=null,remoteAnalyser={},voiceRAF=0,participantHandler=null;
+function ctx(){try{if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();return audioCtx;}catch(e){return null;}}
+async function unlock(){var c=ctx();if(!c)return false;try{if(c.state==='suspended')await c.resume();return c.state==='running';}catch(e){return false;}}
+function safe(v){return String(v||'').replace(/[.#$\[\]\/]/g,'_').slice(0,90)||'x';}
+function pair(other){var a='admin',b=safe(other);return roomRef.child('signaling/'+(a<b?a+'__'+b:b+'__a' ));}
+function speaker(id){return id==='admin'||!!(window.__addaAdminState&&window.__addaAdminState.speakers&&window.__addaAdminState.speakers[id]);}
+function desired(id,list){var x=list&&list[id];return !!(x&&x.online!==false&&(speaker('admin')||!!x.canSpeak));}
+function level(a){try{var d=new Uint8Array(a.fftSize),sum=0;a.getByteTimeDomainData(d);for(var i=0;i<d.length;i++){var z=(d[i]-128)/128;sum+=z*z;}return Math.min(1,Math.sqrt(sum/d.length)*6);}catch(e){return 0;}}
+function meter(){cancelAnimationFrame(voiceRAF);var bars=document.querySelectorAll('#addaAdminVoiceBars i');function loop(){var v=localAnalyser?level(localAnalyser):0;Object.keys(remoteAnalyser).forEach(function(k){v=Math.max(v,level(remoteAnalyser[k]));});bars.forEach(function(b,i){var w=Math.max(.1,Math.min(1,v*(.8+Math.sin(Date.now()/120+i)*.12)));b.style.transform='scaleY('+w.toFixed(2)+')';b.style.opacity=String(.3+w*.7);});var st=document.getElementById('addaVoiceState');if(st)st.textContent=v>.04?'Speaking':'Listening';voiceRAF=requestAnimationFrame(loop);}voiceRAF=requestAnimationFrame(loop);}
+function startLocalMeter(){if(localAnalyser||!localStream)return;var c=ctx();if(!c)return;try{var s=c.createMediaStreamSource(localStream),a=c.createAnalyser();a.fftSize=128;s.connect(a);localAnalyser=a;meter();}catch(e){}}
+async function startAudio(){if(localStream){await unlock();return localStream;}if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw new Error('Microphone unavailable');await unlock();localStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true},video:false});localStream.getTracks().forEach(function(t){t.enabled=true;});startLocalMeter();return localStream;}
+function stopPeer(id){var p=peers[id];if(!p)return;try{p.refs.offer.off('value',p.onOffer);p.refs.answer.off('value',p.onAnswer);p.refs.candidates.off('child_added',p.onCandidate);}catch(e){}try{p.pc.close();}catch(e){}if(p.source)try{p.source.disconnect();}catch(e){}delete remoteAnalyser[id];delete peers[id];}
+function offererFor(id,list){var other=!!(list[id]&&list[id].canSpeak);return speaker('admin')&&(!other||'admin'<safe(id));}
+async function makePeer(id,list){if(!joined||peers[id]||!desired(id,list))return;var ref=pair(id),pc=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]}),p={pc:pc,canSpeak:!!(list[id]&&list[id].canSpeak),refs:{offer:ref.child('offer'),answer:ref.child('answer'),candidates:ref.child('candidates')},closed:false};peers[id]=p;var offerer=offererFor(id,list),queued=[];
+pc.onicecandidate=function(e){if(e.candidate)p.refs.candidates.push(Object.assign({},e.candidate.toJSON(),{from:'admin',ts:Date.now()}));};
+pc.ontrack=function(e){var stream=e.streams&&e.streams[0],c=ctx();if(!stream||!c)return;try{if(c.state==='suspended')c.resume().catch(function(){});var src=c.createMediaStreamSource(stream),an=c.createAnalyser(),gain=c.createGain();an.fftSize=128;gain.gain.value=1;src.connect(an);an.connect(gain);gain.connect(c.destination);p.source=src;remoteAnalyser[id]=an;meter();}catch(err){console.warn('ADDA admin audio',err);}};
+pc.onconnectionstatechange=function(){if(['failed','disconnected','closed'].indexOf(pc.connectionState)>=0&&!p.closed){p.closed=true;stopPeer(id);if(joined)setTimeout(reconcile,1200);}};
+function cand(s){var c=s.val();if(!c||c.from==='admin')return;if(pc.remoteDescription)pc.addIceCandidate(c).catch(function(){});else queued.push(c);}
+async function offer(s){var o=s.val();if(!o||o.from==='admin'||offerer)return;try{if(pc.signalingState!=='stable')return;await pc.setRemoteDescription(o);for(var i=0;i<queued.length;i++)await pc.addIceCandidate(queued[i]).catch(function(){});queued=[];var a=await pc.createAnswer();await pc.setLocalDescription(a);await p.refs.answer.set({type:a.type,sdp:a.sdp,from:'admin',ts:Date.now()});}catch(e){console.warn('ADDA admin answer',e);}}
+async function answer(s){var a=s.val();if(!a||a.from==='admin'||!offerer)return;try{if(pc.signalingState==='have-local-offer'){await pc.setRemoteDescription(a);for(var i=0;i<queued.length;i++)await pc.addIceCandidate(queued[i]).catch(function(){});queued=[];}}catch(e){}}
+p.onCandidate=cand;p.onOffer=offer;p.onAnswer=answer;p.refs.candidates.on('child_added',cand);p.refs.offer.on('value',offer);p.refs.answer.on('value',answer);if(speaker('admin')&&localStream)localStream.getTracks().forEach(function(t){try{pc.addTrack(t,localStream);}catch(e){}});if(offerer){try{await p.refs.offer.remove();await p.refs.answer.remove();var o=await pc.createOffer({offerToReceiveAudio:true});await pc.setLocalDescription(o);await p.refs.offer.set({type:o.type,sdp:o.sdp,from:'admin',ts:Date.now()});}catch(e){console.warn('ADDA admin offer',e);}}}
+var reconciling=false;async function reconcile(){if(!joined||reconciling)return;reconciling=true;try{var s=await roomRef.child('participants').once('value'),list=s.val()||{};Object.keys(peers).forEach(function(id){if(!desired(id,list)||peers[id].canSpeak!==!!(list[id]&&list[id].canSpeak))stopPeer(id);});for(var i=0,ids=Object.keys(list);i<ids.length;i++){var id=ids[i];if(id!=='admin'&&desired(id,list)&&!peers[id])await makePeer(id,list);}}finally{reconciling=false;}}
+async function join(){if(joined)return;await startAudio();await roomRef.child('participants/admin').set({name:'Admin',account:'admin',role:'admin',canSpeak:true,online:true,joinedAt:firebase.database.ServerValue.TIMESTAMP});roomRef.child('participants/admin').onDisconnect().remove();joined=true;participantHandler=function(){reconcile();};roomRef.child('participants').on('value',participantHandler);await reconcile();}
+async function leave(){if(!joined)return;joined=false;try{if(participantHandler)roomRef.child('participants').off('value',participantHandler);await roomRef.child('participants/admin').remove();}catch(e){}Object.keys(peers).forEach(stopPeer);if(localStream){localStream.getTracks().forEach(function(t){try{t.stop();}catch(e){}});localStream=null;}localAnalyser=null;cancelAnimationFrame(voiceRAF);}
+window.__addaAdminStartAudio=startAudio;window.__addaAdminJoin=join;window.__addaAdminLeave=leave;window.__addaAdminRefreshPeers=reconcile;window.__addaAdminUnlockAudio=unlock;window.__addaAdminState={speakers:{}};
+roomRef.on('value',function(s){var next=s.val()||{speakers:{}};window.__addaAdminState=next;if(joined)reconcile();});
+})();
+</script>
+<div id="totalProfileModal" class="total-profile-modal" aria-hidden="true"><div class="total-profile-overlay" data-close-total-profile="1"></div><div class="total-profile-box" role="dialog" aria-modal="true" aria-labelledby="totalProfileTitle"><button type="button" class="total-profile-close" data-close-total-profile="1" aria-label="Close">×</button><div id="totalProfileBody"></div></div></div>
+<style id="my-overtime-room-admin-style">
+.room-admin-grid{display:grid;gap:12px}.room-admin-hero{background:linear-gradient(145deg,#fff,#fff0f6);border:1px solid #f1c3d7;border-radius:20px;padding:15px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 8px 25px rgba(226,19,110,.07)}.room-admin-title{font-size:19px;font-weight:950;color:#d90061}.room-admin-sub{font-size:10px;color:#8f7d85;margin-top:4px}.room-admin-count{min-width:76px;height:62px;border-radius:16px;background:#fff;border:1px solid #f0d6e1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#d90061}.room-admin-count span{font-size:21px;font-weight:950}.room-admin-count small{font-size:8px;color:#9a8790}.room-admin-layout{display:grid;grid-template-columns:330px 1fr;gap:12px}.room-admin-users,.room-admin-chat,.room-admin-notice-box{min-width:0}.room-admin-head{display:flex;gap:8px;align-items:center;margin-bottom:9px}.room-admin-head h2{margin:0!important;flex:0 0 auto}.room-admin-head .search{margin:0;padding:8px 9px;font-size:10px}.room-user-list{display:grid;gap:7px;max-height:610px;overflow:auto}.room-user-item{background:linear-gradient(145deg,#fff,#fff8fb);border:1px solid #f0dbe4;border-radius:14px;padding:10px;cursor:pointer;transition:.16s ease}.room-user-item:hover,.room-user-item.selected{border-color:#e2136e;box-shadow:0 6px 18px rgba(226,19,110,.08)}.room-user-top{display:flex;align-items:center;gap:8px}.room-user-avatar{width:34px;height:34px;border-radius:11px;background:#e2136e;color:#fff;display:grid;place-items:center;font-weight:900}.room-user-main{min-width:0;flex:1}.room-user-main b{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.room-user-main span{display:block;font-size:8px;color:#95858d;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.room-user-status{font-size:7px;font-weight:900;padding:4px 6px;border-radius:999px;background:#effaf5;color:#15956d}.room-user-status.block{background:#fff0f2;color:#c4004f}.room-user-controls{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:8px}.room-user-controls button{border:0;border-radius:8px;padding:7px 4px;font-size:8px;font-weight:900;background:#fff0f6;color:#d90061}.room-user-controls button.danger{background:#fff0f2;color:#c4004f}.room-user-controls button.on{background:#e2136e;color:#fff}.room-admin-chat{display:flex;flex-direction:column;min-height:650px}.room-admin-chat-head{display:flex;justify-content:space-between;gap:10px;align-items:center;border-bottom:1px solid #f0dfe6;padding-bottom:10px}.room-admin-chat-head h2{margin:0!important;font-size:14px!important;color:#d90061!important}.room-admin-chat-head span{display:block;color:#95858d;font-size:8px;margin-top:3px}.room-admin-messages{flex:1;min-height:440px;max-height:610px;overflow:auto;padding:12px 5px}.room-admin-row{display:flex;flex-direction:column;align-items:flex-start;margin-bottom:10px}.room-admin-row.user{align-items:flex-start}.room-admin-row.admin{align-items:flex-end}.room-admin-row-name{font-size:8px;color:#9a8991;font-weight:900;margin:0 6px 3px}.room-admin-row.admin .room-admin-row-name{color:#d90061}.room-admin-bubble{max-width:78%;padding:9px 12px;border-radius:15px;background:#f4f1f3;color:#393237;font-size:11px;line-height:1.5;white-space:pre-wrap;word-break:break-word;border-top-left-radius:5px}.room-admin-row.admin .room-admin-bubble{background:#e2136e;color:#fff;border-top-left-radius:15px;border-top-right-radius:5px}.room-admin-time{font-size:7px;color:#aa9aa1;margin:3px 6px}.room-admin-delete{border:0;background:transparent;color:#c43b70;font-size:8px;cursor:pointer;margin:1px 5px}.room-admin-composer{border-top:1px solid #f0dfe6;padding-top:9px}.room-admin-composer textarea,.room-admin-notice-box textarea{width:100%;min-height:65px;resize:vertical;border:1px solid #ecd0db;border-radius:12px;padding:9px;font-size:10px;outline:none}.room-admin-composer textarea:focus,.room-admin-notice-box textarea:focus{border-color:#e2136e;box-shadow:0 0 0 3px rgba(226,19,110,.07)}.room-admin-notice-box{background:linear-gradient(145deg,#fff,#fff6fa)}@media(max-width:900px){.room-admin-layout{grid-template-columns:1fr}.room-admin-users{order:1}.room-admin-chat{order:2;min-height:560px}.room-user-list{max-height:330px;grid-template-columns:1fr 1fr}}@media(max-width:520px){.room-user-list{grid-template-columns:1fr}.room-admin-hero{padding:12px}.room-admin-title{font-size:17px}.room-admin-chat{min-height:520px}.room-admin-messages{min-height:330px}.room-admin-bubble{max-width:88%}}
+</style>
+<style id="my-overtime-room-report-admin-style">
+.room-admin-reports{margin-top:14px}.room-admin-report-count{min-width:28px;height:28px;padding:0 8px;border-radius:999px;background:#fff0f6;color:#d90061;display:grid;place-items:center;font-size:9px;font-weight:950}.room-admin-reports-list{display:grid;gap:8px;margin-top:10px}.room-admin-report{border:1px solid #f1cbd9;background:linear-gradient(145deg,#fff,#fff7fa);border-radius:17px;padding:11px;box-shadow:0 5px 16px rgba(226,19,110,.05)}.room-admin-report-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.room-admin-report-reason{font-size:9px;font-weight:950;color:#d90061;background:#fff0f6;border-radius:999px;padding:5px 8px}.room-admin-report-status{font-size:7px;font-weight:900;color:#a07888}.room-admin-report-user{font-size:9px;font-weight:900;color:#393237;margin-top:8px}.room-admin-report-text{margin-top:6px;padding:8px 9px;border-radius:11px;background:#f7f2f5;font-size:9px;color:#51464c;line-height:1.45}.room-admin-report-meta{font-size:7px;color:#9a8991;margin-top:6px}.room-admin-report-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}.room-admin-report-actions button{border:0;border-radius:9px;padding:7px 9px;font-size:7px;font-weight:900;background:#fff0f6;color:#d90061}.room-admin-report-actions .danger{background:#fff0f2;color:#c4004f}.room-admin-report-actions .ok{background:#eafaf4;color:#128a64}
+</style>
+<script id="my-overtime-room-admin-controller">
+(function(){
+  var db=firebase.database(), roomRef=db.ref('myOvertimeAdmin/myRoom'), selectedUser=null, roomMessages={}, roomUsers={}, roomReports={};
+  function safe(v){return String(v||'').trim().replace(/[^a-zA-Z0-9_-]/g,'_').slice(0,100)||'user';}
+  function escR(v){return String(v==null?'':v).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]});}
+  function tm(t){try{return new Date(Number(t||Date.now())).toLocaleString('bn-BD',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});}catch(e){return '';}}
+  function userInfo(k,d){var p=d&&d.profile||{};return {key:k,name:String(p.name||d.name||'Unnamed User'),id:String(p.id||k),device:String(d.cloudDeviceKey||k)};}
+  function control(k){return roomUsers[k]||{canSend:true,blocked:false};}
+  window.renderMyRoomAdmin=function(){
+    var list=document.getElementById('roomAdminUsersList');if(!list)return;var q=(document.getElementById('roomAdminSearch')?.value||'').toLowerCase().trim();
+    var arr=Object.entries(window.__myRoomAllUsers||{}).map(function(e){return userInfo(e[0],e[1]);}).filter(function(x){return !q||[x.name,x.id,x.key].join(' ').toLowerCase().includes(q);});
+    if(!arr.length){list.innerHTML='<div class="empty">No Users Found</div>';return;}
+    list.innerHTML=arr.map(function(x){var c=control(x.id?safe(x.id):safe(x.key));var block=!!c.blocked,removed=!!c.removed,send=c.canSend!==false&&!block&&!removed;return '<div class="room-user-item '+(selectedUser===x.id?'selected':'')+'" onclick="roomAdminSelectUser(\''+escR(x.id).replace(/'/g,'&#039;')+'\')"><div class="room-user-top"><div class="room-user-avatar">'+escR((x.name.charAt(0)||'U').toUpperCase())+'</div><div class="room-user-main"><b>'+escR(x.name)+'</b><span>ID: '+escR(x.id)+'</span></div><span class="room-user-status '+(block?'block':'')+'">'+(removed?'REMOVED':(block?'BLOCKED':(send?'SMS ON':'SMS OFF')))+'</span></div><div class="room-user-controls"><button class="'+(send?'on':'')+'" onclick="event.stopPropagation();roomAdminToggleSMS(\''+escR(x.id).replace(/'/g,'&#039;')+'\')">'+(send?'SMS ON':'SMS OFF')+'</button><button class="'+(block?'danger':'')+'" onclick="event.stopPropagation();roomAdminToggleBlock(\''+escR(x.id).replace(/'/g,'&#039;')+'\')">'+(block?'Unblock':'Block')+'</button><button class="danger" onclick="event.stopPropagation();'+(removed?'roomAdminRestoreUser':'roomAdminRemoveUser')+'(\''+escR(x.id).replace(/'/g,'&#039;')+'\')">'+(removed?'Restore':'Remove')+'</button></div></div>';}).join('');
+  };
+  function selectedMessages(){var arr=Object.entries(roomMessages||{}).filter(function(e){return e[1]&&e[1].text;});if(selectedUser)arr=arr.filter(function(e){return String(e[1].account||'')===String(selectedUser||'');});return arr.sort(function(a,b){return Number(a[1].createdAt||0)-Number(b[1].createdAt||0);}).slice(-300);}
+  function renderMessages(){var box=document.getElementById('roomAdminMessages');if(!box)return;var arr=selectedMessages();var count=document.getElementById('roomAdminMessageCount');if(count)count.textContent=String(Object.keys(roomMessages||{}).length);if(!arr.length){box.innerHTML='<div class="empty">No messages yet</div>';return;}box.innerHTML=arr.map(function(e){var k=e[0],x=e[1],admin=String(x.role||'')==='admin';return '<div class="room-admin-row '+(admin?'admin':'user')+'"><div class="room-admin-row-name">'+escR(x.name||'User')+(admin?' • Admin':'')+'</div><div class="room-admin-bubble">'+escR(x.text)+'</div><div class="room-admin-time">'+tm(x.createdAt)+'</div><button class="room-admin-delete" onclick="roomAdminDeleteMessage(\''+escR(k)+'\')">Remove Message</button></div>';}).join('');requestAnimationFrame(function(){box.scrollTop=box.scrollHeight;});}
+  window.roomAdminSelectUser=function(id){selectedUser=String(id||'');var u=Object.entries(window.__myRoomAllUsers||{}).map(function(e){return userInfo(e[0],e[1]);}).find(function(x){return x.id===selectedUser;});document.getElementById('roomAdminSelectedName').textContent=u?u.name:'User Messages';document.getElementById('roomAdminSelectedId').textContent=u?'ID: '+u.id:'Selected account';renderMyRoomAdmin();renderMessages();};
+  window.roomAdminClearSelection=function(){selectedUser=null;document.getElementById('roomAdminSelectedName').textContent='All Room Messages';document.getElementById('roomAdminSelectedId').textContent='See every user\'s messages';renderMyRoomAdmin();renderMessages();};
+  window.roomAdminClearInput=function(){var x=document.getElementById('roomAdminInput');if(x)x.value='';};
+  window.roomAdminSend=function(){var x=document.getElementById('roomAdminInput'),text=String(x&&x.value||'').trim();if(!text)return;roomRef.child('messages').push({text:text.slice(0,300),name:'Admin',account:'admin',deviceId:'admin',role:'admin',createdAt:firebase.database.ServerValue.TIMESTAMP}).then(function(){x.value='';}).catch(function(){toast('Message failed');});};
+  window.roomAdminDeleteMessage=function(k){roomRef.child('messages/'+safe(k)).remove().catch(function(){toast('Remove failed');});};
+  window.roomAdminPublishNotice=function(){var x=document.getElementById('roomAdminNotice'),text=String(x&&x.value||'').trim();if(!text)return;roomRef.child('notice').set({text:text.slice(0,500),updatedAt:firebase.database.ServerValue.TIMESTAMP}).then(function(){toast('Room Notice published');});};
+  window.roomAdminRemoveNotice=function(){roomRef.child('notice').remove().then(function(){var x=document.getElementById('roomAdminNotice');if(x)x.value='';toast('Room Notice removed');});};
+  function writeControl(id,patch){var k=safe(id),base=control(k),next=Object.assign({},base,patch,{updatedAt:firebase.database.ServerValue.TIMESTAMP});return roomRef.child('users/'+k).set(next);}
+  window.roomAdminToggleSMS=function(id){var c=control(safe(id));writeControl(id,{canSend:c.canSend===false});};
+  window.roomAdminToggleBlock=function(id){var c=control(safe(id));writeControl(id,{blocked:!c.blocked});};
+  window.roomAdminRemoveUser=function(id){writeControl(id,{removed:true,blocked:true,canSend:false}).then(function(){if(selectedUser===id)roomAdminClearSelection();toast('User removed from My Room');});};
+  window.roomAdminRestoreUser=function(id){writeControl(id,{removed:false,blocked:false,canSend:true}).then(function(){toast('User restored to My Room');});};
+  function renderReports(){var box=document.getElementById('roomAdminReportsList');if(!box)return;var arr=Object.entries(roomReports||{}).sort(function(a,b){return Number(b[1].createdAt||0)-Number(a[1].createdAt||0);}).slice(0,100);var pending=arr.filter(function(e){return String(e[1].status||'pending')==='pending';}).length;var c=document.getElementById('roomAdminReportCount');if(c)c.textContent=String(pending);if(!arr.length){box.innerHTML='<div class="empty">No Reports</div>';return;}box.innerHTML=arr.map(function(e){var k=e[0],x=e[1]||{},status=String(x.status||'pending');return '<div class="room-admin-report"><div class="room-admin-report-top"><span class="room-admin-report-reason">'+escR(x.reason||'অন্যান্য')+'</span><span class="room-admin-report-status">'+escR(status.toUpperCase())+'</span></div><div class="room-admin-report-user">Reported: '+escR(x.reportedName||'User')+' · ID: '+escR(x.reportedAccount||'—')+'</div><div class="room-admin-report-text">'+escR(x.messageText||'Message unavailable')+'</div><div class="room-admin-report-meta">Reported by '+escR(x.reporterName||'User')+' · '+escR(x.reporterAccount||'—')+' · '+tm(x.createdAt)+'</div><div class="room-admin-report-actions"><button class="danger" onclick="roomAdminReportDeleteMessage(\''+escR(x.messageId||'').replace(/'/g,'&#039;')+'\')">Remove Message</button><button onclick="roomAdminReportBlock(\''+escR(x.reportedAccount||'').replace(/'/g,'&#039;')+'\')">Block User</button><button class="ok" onclick="roomAdminReportResolve(\''+escR(k).replace(/'/g,'&#039;')+'\')">Resolve</button><button class="danger" onclick="roomAdminDeleteReport(\''+escR(k).replace(/'/g,'&#039;')+'\')">Delete Report</button></div></div>';}).join('');}
+  window.roomAdminReportResolve=function(k){roomRef.child('reports/'+safe(k)).update({status:'resolved',resolvedAt:firebase.database.ServerValue.TIMESTAMP});};
+  window.roomAdminDeleteReport=function(k){roomRef.child('reports/'+safe(k)).remove();};
+  window.roomAdminReportDeleteMessage=function(k){if(k)roomRef.child('messages/'+safe(k)).remove();};
+  window.roomAdminReportBlock=function(id){if(!id)return;writeControl(id,{blocked:true,canSend:false}).then(function(){toast('User blocked');});};
+  roomRef.child('messages').on('value',function(s){roomMessages=s.val()||{};renderMessages();});
+  roomRef.child('users').on('value',function(s){roomUsers=s.val()||{};renderMyRoomAdmin();});
+  roomRef.child('reports').on('value',function(s){roomReports=s.val()||{};renderReports();});
+  roomRef.child('notice').on('value',function(s){var x=s.val()||{};var n=document.getElementById('roomAdminNotice');if(n&&x.text&&document.activeElement!==n)n.value=x.text;});
+  db.ref('myOvertimeUsers').on('value',function(s){window.__myRoomAllUsers=s.val()||{};renderMyRoomAdmin();});
+  setInterval(function(){if(document.getElementById('myroom')?.classList.contains('active')){renderMyRoomAdmin();renderMessages();}},5000);
+})();
+</script>
+
+
+<style id="v13-admin-media-live-style">
+.v13-media-manager{margin-top:14px!important;border-radius:22px!important;background:linear-gradient(145deg,#fff,#fff7fa)!important;box-shadow:0 10px 30px rgba(226,19,110,.07)!important}
+.v13-mm-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.v13-mm-head h2{margin:0!important;color:#272127!important;font-size:17px!important}
+.v13-mm-head p{margin:4px 0 0!important;color:#8b7e86!important;font-size:10px!important}
+.v13-mm-live{background:#fff0f6;color:#e2136e;border:1px solid #f4c9da;border-radius:999px;padding:6px 9px;font-size:8px;font-weight:900}
+.v13-mm-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.v13-mm-card{border:1px solid #efd6e1;background:#fff;border-radius:17px;padding:13px}
+.v13-mm-card-title{font-size:13px;font-weight:900;color:#e2136e}
+.v13-mm-help{font-size:9px;color:#91828a;margin:4px 0 9px;line-height:1.5}
+.v13-mm-card input[type=file]{width:100%;padding:9px;border:1px dashed #efbfd2;border-radius:10px;background:#fffafd;font-size:10px}
+.v13-mm-text{width:100%;margin-top:7px;border:1px solid #ead9e0;border-radius:10px;padding:9px;outline:0;font-size:10px}
+.v13-mm-actions{display:flex;gap:7px;margin-top:8px}.v13-mm-actions .btn{flex:1}
+.v13-mm-state{margin-top:8px;background:#fff7fa;border-radius:9px;padding:7px;font-size:9px;color:#8b7e86;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v13-mm-tip{font-size:9px;color:#a08e97;margin-top:10px;padding-top:9px;border-top:1px solid #f1e1e7}
+.adda-comments-list .adda-comment{transition:.15s ease}.adda-comments-list .adda-comment:hover{transform:translateX(2px)}
+@media(max-width:700px){.v13-mm-grid{grid-template-columns:1fr}.v13-mm-head{align-items:flex-start}}
+
+/* ADDA premium motion and moderation polish */
+.adda-premium-hero,.adda-box{animation:addaFadeUp .55s cubic-bezier(.2,.75,.25,1) both}
+.adda-premium-hero{position:relative;overflow:hidden}
+.adda-premium-hero:after{content:"";position:absolute;inset:-80px auto auto -35%;width:70%;height:180px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.72),transparent);transform:rotate(-12deg);animation:addaSheen 5s ease-in-out infinite;pointer-events:none}
+.adda-hero-top,.adda-voice-panel,.live-stat,.adda-box .live-request{animation:addaSoftIn .5s ease both}
+.adda-hero-top{animation-delay:.04s}.adda-voice-panel{animation-delay:.09s}
+.live-stat{transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}.live-stat:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(226,19,110,.12);border-color:#efbfd2}
+.adda-box{transition:transform .25s ease,box-shadow .25s ease}.adda-box:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(226,19,110,.09)}
+.adda-box .live-request{transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}.adda-box .live-request:hover{transform:translateY(-2px);box-shadow:0 9px 22px rgba(226,19,110,.08);border-color:#efbfd2}
+.adda-comment-card{align-items:center;gap:10px}.adda-comment-text{margin-top:6px;color:#333;font-size:11px;line-height:1.55;word-break:break-word}.adda-comment-delete{flex:0 0 auto;min-width:64px;animation:addaButtonIn .35s ease both}.adda-comment-delete:hover{transform:translateY(-1px)}
+.live-badge.on{animation:addaLivePulse 1.8s ease-in-out infinite}.adda-speaker-dot{animation:addaDotPulse 1.2s ease-in-out infinite}.adda-voice-bars i,.adda-speaker-bars i{animation:addaBar 1s ease-in-out infinite}.adda-voice-bars i:nth-child(2),.adda-speaker-bars i:nth-child(2){animation-delay:.12s}.adda-voice-bars i:nth-child(3),.adda-speaker-bars i:nth-child(3){animation-delay:.24s}.adda-voice-bars i:nth-child(4),.adda-speaker-bars i:nth-child(4){animation-delay:.36s}.adda-voice-bars i:nth-child(5),.adda-speaker-bars i:nth-child(5){animation-delay:.48s}.adda-voice-bars i:nth-child(6){animation-delay:.6s}.adda-voice-bars i:nth-child(7){animation-delay:.72s}.adda-voice-bars i:nth-child(8){animation-delay:.84s}
+@keyframes addaFadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes addaSoftIn{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes addaSheen{0%,55%{transform:translateX(-120%) rotate(-12deg)}75%,100%{transform:translateX(220%) rotate(-12deg)}}
+@keyframes addaLivePulse{0%,100%{box-shadow:0 0 0 0 rgba(226,19,110,.08)}50%{box-shadow:0 0 0 8px rgba(226,19,110,0)}}
+@keyframes addaDotPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.35);opacity:.65}}
+@keyframes addaBar{0%,100%{transform:scaleY(.55)}50%{transform:scaleY(1.15)}}
+@keyframes addaButtonIn{from{opacity:0;transform:translateX(5px)}to{opacity:1;transform:translateX(0)}}
+@media(prefers-reduced-motion:reduce){.adda-premium-hero,.adda-box,.adda-hero-top,.adda-voice-panel,.live-stat,.adda-box .live-request,.adda-comment-delete,.live-badge.on,.adda-speaker-dot,.adda-voice-bars i,.adda-speaker-bars i{animation:none!important;transition:none!important}}
+
+</style>
+
+
+</body></html>
+
+<style id="adda-logo-stability-fix">
+/* ADDA logo is intentionally static: no bouncing/jumping motion. */
+.adda-brand-mark,.adda-brand-mark *,.adda-wave-mini,.adda-wave-mini i{animation:none!important;transform:none!important;}
+</style>
